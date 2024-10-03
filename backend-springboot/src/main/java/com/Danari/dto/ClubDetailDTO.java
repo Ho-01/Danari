@@ -1,9 +1,6 @@
 package com.Danari.dto;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -18,4 +15,15 @@ public class ClubDetailDTO {
     private List<PostDTO> events; // 동아리 행사 정보
     private List<PostDTO> recruitments; // 모집 공고 정보
     private List<ReviewDTO> reviews; // 활동 후기 정보
+    @Builder
+    public ClubDetailDTO(Long clubId, String clubName, String department, String roomNumber, String description, List<PostDTO> events, List<PostDTO> recruitments, List<ReviewDTO> reviews) {
+        this.clubId = clubId;
+        this.clubName = clubName;
+        this.department = department;
+        this.roomNumber = roomNumber;
+        this.description = description;
+        this.events = events;
+        this.recruitments = recruitments;
+        this.reviews = reviews;
+    }
 }

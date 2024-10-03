@@ -16,5 +16,5 @@ public class PostDTO {
     private String postTitle;
     private String postContent;
     private LocalDateTime createdAt;
-    private List<byte[]> imagesData; // 여러 이미지 데이터 (바이트 배열 리스트)
+    private List<String> imageUrls; // 이미지 url 리스트
 }
