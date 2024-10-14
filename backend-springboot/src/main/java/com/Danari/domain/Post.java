@@ -10,8 +10,10 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
     private PostType postType;
     private String postTitle;
+    @Lob
     private String postContent;
     private LocalDateTime createdAt;
     @ElementCollection

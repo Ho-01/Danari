@@ -16,5 +16,6 @@ public class Membership {
     @JoinColumn(name = "club_id")
     private Club club;
 
+    @Enumerated(EnumType.STRING)
     private MemberGrade memberGrade;
 }
