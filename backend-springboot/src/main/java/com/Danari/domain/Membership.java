@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 
 @Entity
 public class Membership {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
+    @Column(name = "membership_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
@@ -18,4 +18,11 @@ public class Membership {
 
     @Enumerated(EnumType.STRING)
     private MemberGrade memberGrade;
+
+    public void createMembership(Member member, Club club){
+        this.member = member;
+        member.getMemberships().add(this);
+        this.club = club;
+        club.getMemberships().add(this);
+    }
 }

@@ -1,14 +1,18 @@
 package com.Danari.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
+    @Column(name = "post_id")
     private Long id;
     @Enumerated(EnumType.STRING)
     private PostType postType;
@@ -24,8 +28,8 @@ public class Post {
     private Club club;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member author;
 
     @PrePersist
     protected void onCreate(){
