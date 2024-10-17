@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // UserDetails 객체 생성
         return User.withUsername(member.get().getUsername())
                 .password(member.get().getPassword()) // 암호화된 비밀번호
-                .roles("USER") // 역할 설정
+//                .roles("USER") // 역할 설정
                 .build();
     }
 }

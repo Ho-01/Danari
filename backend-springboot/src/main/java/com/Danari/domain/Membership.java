@@ -1,8 +1,12 @@
 package com.Danari.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class Membership {
     @Id @GeneratedValue
     @Column(name = "membership_id")

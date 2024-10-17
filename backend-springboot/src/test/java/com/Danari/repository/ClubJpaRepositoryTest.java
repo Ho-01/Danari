@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Commit;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,9 +38,9 @@ class ClubJpaRepositoryTest {
     }
     @Test
     void testFindByClubName() {
-        List<Club> foundClubs = clubJpaRepository.findByClubName("배드민턴 동아리");
-        Assertions.assertThat(foundClubs).hasSize(1);
-        Assertions.assertThat(foundClubs.get(0).getRoomNumber()).isEqualTo("101");
+        Optional<Club> foundClubs = clubJpaRepository.findByClubName("배드민턴 동아리");
+        Assertions.assertThat(foundClubs).isPresent();
+        Assertions.assertThat(foundClubs.get().getRoomNumber()).isEqualTo("101");
     }
 
     @Test
