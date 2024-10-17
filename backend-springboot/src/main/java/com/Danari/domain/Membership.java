@@ -23,10 +23,11 @@ public class Membership {
     @Enumerated(EnumType.STRING)
     private MemberGrade memberGrade;
 
-    public void createMembership(Member member, Club club){
+    public void createMembership(Member member, Club club, MemberGrade memberGrade){
         this.member = member;
         member.getMemberships().add(this);
         this.club = club;
         club.getMemberships().add(this);
+        this.memberGrade = memberGrade;
     }
 }

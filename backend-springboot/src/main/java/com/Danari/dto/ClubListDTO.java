@@ -1,18 +1,12 @@
 package com.Danari.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 public class ClubListDTO {
-    private List<ClubDTO> clubs;   // 동아리 리스트
-    @Builder
-    public ClubListDTO(List<ClubDTO> clubs) {
-        this.clubs = clubs;
-    }
+    private List<ClubDTO> clubs = new ArrayList<>();   // 동아리 리스트
 }

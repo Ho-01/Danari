@@ -14,12 +14,8 @@ class MemberJpaRepositoryTest {
     MemberJpaRepository memberJpaRepository;
 
     @Test
-    public void testMember(){
-        Member member = new Member();
-        member.setName("MemberA");
-        member.setPassword("pwpwpwpw123");
-        member.setStudentId(32190789);
-        member.setUsername("ididid123");
+    void testMember(){
+        Member member = new Member("MemberA", 32190789,"username(id)","password");
         Member savedMember = memberJpaRepository.save(member);
     }
 

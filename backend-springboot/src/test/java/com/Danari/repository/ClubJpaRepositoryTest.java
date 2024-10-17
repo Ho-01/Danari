@@ -21,18 +21,8 @@ class ClubJpaRepositoryTest {
     @BeforeEach
     void setUp() {
         // 테스트 데이터 세팅
-        Club club1 = new Club();
-        club1.setClubName("배드민턴 동아리");
-        club1.setRoomNumber("101");
-        club1.setDepartment("체육분과");
-        club1.setDescription("배드민턴 동아리입니다.");
-
-        Club club2 = new Club();
-        club2.setClubName("밴드 동아리");
-        club2.setRoomNumber("202");
-        club2.setDepartment("공연예술분과");
-        club2.setDescription("밴드 동아리입니다.");
-
+        Club club1 = new Club("배드민턴 동아리","101","체육분과","배드민턴 동아리입니다.");
+        Club club2 = new Club("밴드 동아리","202","공연예술분과","밴드 동아리입니다.");
         clubJpaRepository.save(club1);
         clubJpaRepository.save(club2);
     }
@@ -52,8 +42,8 @@ class ClubJpaRepositoryTest {
 
     @Test
     void testFindByRoomNumber() {
-        List<Club> foundClubs = clubJpaRepository.findByRoomNumber("101");
-        Assertions.assertThat(foundClubs).hasSize(1);
-        Assertions.assertThat(foundClubs.get(0).getClubName()).isEqualTo("배드민턴 동아리");
+        Optional<Club> foundClub = clubJpaRepository.findByRoomNumber("101");
+        Assertions.assertThat(foundClub.isPresent()).isEqualTo(true);
+        Assertions.assertThat(foundClub.get().getClubName()).isEqualTo("배드민턴 동아리");
     }
 }

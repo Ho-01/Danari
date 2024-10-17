@@ -29,8 +29,8 @@ class ReviewJpaRepositoryTest {
     @BeforeEach
     void setup(){
         // testMember와 testClub 생성 및 저장
-        testMember = new Member();
-        testClub = new Club();
+        testMember = new Member("김승호", 32190789, "username(ID)","password");
+        testClub = new Club("밴드 동아리","101","공연예술분과","밴드 동아리입니다.");
         clubJpaRepository.save(testClub);
         memberJpaRepository.save(testMember);
 
@@ -55,14 +55,14 @@ class ReviewJpaRepositoryTest {
     }
 
     @Test
-    public void testFindReviewsByClubId(){
+    void testFindReviewsByClubId(){
         List<Review> foundReviews = reviewJpaRepository.findReviewsByClubId(testClub.getId());
         Assertions.assertThat(foundReviews).hasSize(2);
         Assertions.assertThat(foundReviews.get(0).getClub().getId()).isEqualTo(testClub.getId());
         Assertions.assertThat(foundReviews.get(1).getClub().getId()).isEqualTo(testClub.getId());
     }
     @Test
-    public void testFindReviewsByAuthorId(){
+    void testFindReviewsByAuthorId(){
         List<Review> foundReviews = reviewJpaRepository.findReviewsByAuthorId(testMember.getId());
         Assertions.assertThat(foundReviews).hasSize(2);
         Assertions.assertThat(foundReviews.get(0).getAuthor().getId()).isEqualTo(testMember.getId());

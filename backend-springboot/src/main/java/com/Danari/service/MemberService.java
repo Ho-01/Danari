@@ -31,11 +31,7 @@ public class MemberService {
         }
 
         // 멤버 생성 -> DTO로 받은 정보 입력 -> DB에 저장
-        Member newMember = new Member();
-        newMember.setName(memberRegistrationDTO.getName());
-        newMember.setStudentId(memberRegistrationDTO.getStudentId());
-        newMember.setUsername(memberRegistrationDTO.getUsername());
-        newMember.setPassword(memberRegistrationDTO.getPassword());
+        Member newMember = new Member(memberRegistrationDTO.getName(), memberRegistrationDTO.getStudentId(), memberRegistrationDTO.getUsername(), memberRegistrationDTO.getPassword());
         memberJpaRepository.save(newMember);
 
         // 연관관계(membership 테이블) 설정

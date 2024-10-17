@@ -30,15 +30,11 @@ class RecruitmentPostJpaRepositoryTest {
     @BeforeEach
     void setUp() {
         // 동아리 생성 및 저장
-        testClub = new Club();
-        testClub.setClubName("밴드 동아리");
-        testClub.setRoomNumber("101");
-        testClub.setDepartment("공연예술분과");
-        testClub.setDescription("밴드 동아리입니다.");
+        testClub = new Club("밴드 동아리","101","공연예술분과","밴드 동아리입니다.");
         clubJpaRepository.save(testClub);
 
         // 멤버 생성 및 저장
-        testMember = new Member();
+        testMember = new Member("김승호", 32190789, "username(ID)","password");
         memberJpaRepository.save(testMember);
 
         // 행사 게시물 생성 및 저장

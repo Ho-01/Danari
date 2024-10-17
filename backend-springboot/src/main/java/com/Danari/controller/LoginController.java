@@ -20,9 +20,6 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private MemberJpaRepository memberJpaRepository;
-
     @PostMapping
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequestDTO){
         try {

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class MemberServiceTest {
     @Autowired
     private MemberService memberService;
@@ -38,12 +40,10 @@ class MemberServiceTest {
     @BeforeEach
     void setup(){
         //testClub1 값 설정
-        Club testClub1 = new Club();
-        testClub1.setClubName("testClub1");
+        Club testClub1 = new Club("testClub1", "101", "dep1", "this is testClub1");
         clubJpaRepository.save(testClub1);
         //testClub2 값 설정
-        Club testClub2 = new Club();
-        testClub2.setClubName("testClub2");
+        Club testClub2 = new Club("testClub2", "202", "dep1", "this is testClub2");
         clubJpaRepository.save(testClub2);
         // testMembershipDTO1 값 설정
         MembershipDTO testMembershipDTO1 = new MembershipDTO();
@@ -68,7 +68,7 @@ class MemberServiceTest {
     }
 
     @Test
-    public void testRegisterMember(){
+    void testRegisterMember(){
         memberService.registerMember(testMemberRegistrationDTO);
 
         Optional<Member> savedMember = memberJpaRepository.findByUsername("username");
