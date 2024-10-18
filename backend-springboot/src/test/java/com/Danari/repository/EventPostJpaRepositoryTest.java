@@ -38,22 +38,12 @@ class EventPostJpaRepositoryTest {
         memberJpaRepository.save(testMember);
 
         // 행사 게시물 생성 및 저장
-        Post eventPost1 = new Post();
-        testMember.getPosts().add(eventPost1);
-        eventPost1.setAuthor(testMember);
-        eventPost1.setPostType(PostType.CLUB_EVENT);
-        eventPost1.setPostTitle("공연일정1");
-        eventPost1.setPostContent("XX월 XX일에 예정된 공연입니다.");
-        eventPost1.setClub(testClub);
+        Post eventPost1 = new Post(PostType.CLUB_EVENT, "공연일정1", "XX월 XX일에 예정된 공연입니다.", testClub, testMember);
+        testMember.getEventPosts().add(eventPost1);
         eventPostJpaRepository.save(eventPost1);
 
-        Post eventPost2 = new Post();
-        testMember.getPosts().add(eventPost2);
-        eventPost2.setAuthor(testMember);
-        eventPost2.setPostType(PostType.CLUB_EVENT);
-        eventPost2.setPostTitle("공연일정2");
-        eventPost2.setPostContent("YY월 YY일에 예정된 공연입니다.");
-        eventPost2.setClub(testClub);
+        Post eventPost2 = new Post(PostType.CLUB_EVENT, "공연일정2", "YY월 YY일에 예정된 공연입니다.", testClub, testMember);
+        testMember.getEventPosts().add(eventPost2);
         eventPostJpaRepository.save(eventPost2);
     }
 

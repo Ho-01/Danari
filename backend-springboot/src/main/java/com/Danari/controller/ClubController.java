@@ -35,4 +35,10 @@ public class ClubController {
         ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName(clubName);
         return ResponseEntity.ok(clubDetailDTO);
     }
+
+    @PostMapping("/new")
+    public ResponseEntity<String> newClubRegister(@RequestBody ClubDetailDTO clubDetailDTO){
+
+        return ResponseEntity.ok("새 동아리정보 등록 성공");
+    }
 }

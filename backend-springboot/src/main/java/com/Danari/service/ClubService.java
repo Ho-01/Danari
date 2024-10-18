@@ -43,21 +43,21 @@ public class ClubService {
         if(foundClub.isPresent()){
             Club club = foundClub.get();
 
-            List<PostDTO> eventDTOList = new ArrayList<>();
+            List<PostCreateDTO> eventDTOList = new ArrayList<>();
             for(Post post : club.getEvents()){
-                PostDTO postDTO = new PostDTO(post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getCreatedAt(), post.getImageUrls());
-                eventDTOList.add(postDTO);
+                PostCreateDTO postCreateDTO = new PostCreateDTO(post.getAuthor().getUsername(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
+                eventDTOList.add(postCreateDTO);
             }
 
-            List<PostDTO> recruitmentDTOList = new ArrayList<>();
+            List<PostCreateDTO> recruitmentDTOList = new ArrayList<>();
             for(Post post : club.getRecruitments()){
-                PostDTO postDTO = new PostDTO(post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getCreatedAt(), post.getImageUrls());
-                recruitmentDTOList.add(postDTO);
+                PostCreateDTO postCreateDTO = new PostCreateDTO(post.getAuthor().getUsername(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
+                recruitmentDTOList.add(postCreateDTO);
             }
 
             List<ReviewDTO> reviewDTOList = new ArrayList<>();
             for(Review review : club.getReviews()){
-                ReviewDTO reviewDTO = new ReviewDTO(review.getAuthor().getUsername(), review.getReviewContent(), review.getCreatedAt());
+                ReviewDTO reviewDTO = new ReviewDTO(review.getAuthor().getUsername(), review.getClub().getClubName(), review.getReviewContent());
                 reviewDTOList.add(reviewDTO);
             }
 

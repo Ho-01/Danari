@@ -16,7 +16,7 @@ public class MemberController {
 
     @GetMapping("/register")
     public ResponseEntity<String> registerMember(@RequestBody MemberRegistrationDTO memberRegistrationDTO){
-
+        memberService.registerMember(memberRegistrationDTO);
         return ResponseEntity.ok("새 멤버 회원가입 성공");
     }
 }

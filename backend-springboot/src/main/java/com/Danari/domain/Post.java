@@ -1,6 +1,7 @@
 package com.Danari.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +21,6 @@ public class Post {
     @Lob
     private String postContent;
     private LocalDateTime createdAt;
-    @ElementCollection
     private List<String> imageUrls; // 이미지 URL 리스트
 
     @ManyToOne
@@ -34,5 +34,14 @@ public class Post {
     @PrePersist
     protected void onCreate(){
         this.createdAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public Post(PostType postType, String postTitle, String postContent, Club club, Member author) {
+        this.postType = postType;
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+        this.club = club;
+        this.author = author;
     }
 }
