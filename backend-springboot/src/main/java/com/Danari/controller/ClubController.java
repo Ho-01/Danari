@@ -1,6 +1,7 @@
 package com.Danari.controller;
 
 import com.Danari.domain.Club;
+import com.Danari.dto.ClubDTO;
 import com.Danari.dto.ClubDetailDTO;
 import com.Danari.dto.ClubListDTO;
 import com.Danari.repository.ClubJpaRepository;
@@ -37,8 +38,8 @@ public class ClubController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<String> newClubRegister(@RequestBody ClubDetailDTO clubDetailDTO){
-
+    public ResponseEntity<String> newClubRegister(@RequestBody ClubDTO clubDTO){
+        clubService.newClubRegister(clubDTO);
         return ResponseEntity.ok("새 동아리정보 등록 성공");
     }
 }

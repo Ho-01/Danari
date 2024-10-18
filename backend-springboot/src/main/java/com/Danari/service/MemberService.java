@@ -37,14 +37,9 @@ public class MemberService {
         // 연관관계(membership 테이블) 설정
         List<MembershipDTO> membershipDTOList =  memberRegistrationDTO.getMembershipDTOList();
         for(MembershipDTO membershipDTO : membershipDTOList){
-            Membership membership = new Membership();
-
-            membership.setMember(newMember);
-            newMember.getMemberships().add(membership); // 멤버의 memberships 필드는 그냥 조회용 list이지만, 양방향으로 등록
-
+            Membership membership = Membership.builder().memberGrade(membershipDTO.getRole()).build();
             Club club = clubJpaRepository.findByClubName(membershipDTO.getClubName()).get();
-            membership.setClub(club);
-            club.getMemberships().add(membership); // 동아리의 memberships 필드는 그냥 조회용 list이지만, 양방향으로 등록
+            membership.createMembership(newMember, club);
 
             membershipJpaRepository.save(membership);
         }

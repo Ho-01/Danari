@@ -46,25 +46,13 @@ class MemberServiceTest {
         Club testClub2 = new Club("testClub2", "202", "dep1", "this is testClub2");
         clubJpaRepository.save(testClub2);
         // testMembershipDTO1 값 설정
-        MembershipDTO testMembershipDTO1 = new MembershipDTO();
-        testMembershipDTO1.setCertificateImageUrls("url1");
-        testMembershipDTO1.setRole(MemberGrade.PRESIDENT);
-        testMembershipDTO1.setClubName("testClub1");
+        MembershipDTO testMembershipDTO1 = new MembershipDTO("김승호", "testClub1", MemberGrade.PRESIDENT, "url1");
         // testMembershipDTO2 값 설정
-        MembershipDTO testMembershipDTO2 = new MembershipDTO();
-        testMembershipDTO2.setCertificateImageUrls("url2");
-        testMembershipDTO2.setRole(MemberGrade.MEMBER);
-        testMembershipDTO2.setClubName("testClub2");
+        MembershipDTO testMembershipDTO2 = new MembershipDTO("김승호", "testClub2", MemberGrade.MEMBER, "url2");
         // testMemberRegistrationDTO 값 설정
-        testMemberRegistrationDTO = new MemberRegistrationDTO();
-        testMemberRegistrationDTO.setName("김승호");
-        testMemberRegistrationDTO.setUsername("username");
-        testMemberRegistrationDTO.setPassword("password");
-        testMemberRegistrationDTO.setStudentId(32190789);
-        List<MembershipDTO> membershipDTOList = new ArrayList<>();
-        membershipDTOList.add(testMembershipDTO1);
-        membershipDTOList.add(testMembershipDTO2);
-        testMemberRegistrationDTO.setMembershipDTOList(membershipDTOList);
+        testMemberRegistrationDTO = new MemberRegistrationDTO("김승호", 32190789, "username", "password");
+        testMemberRegistrationDTO.getMembershipDTOList().add(testMembershipDTO1);
+        testMemberRegistrationDTO.getMembershipDTOList().add(testMembershipDTO2);
     }
 
     @Test

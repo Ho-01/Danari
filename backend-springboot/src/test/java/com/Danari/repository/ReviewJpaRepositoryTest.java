@@ -35,18 +35,14 @@ class ReviewJpaRepositoryTest {
         memberJpaRepository.save(testMember);
 
         // review1 생성 및 필드 설정
-        Review review1 = new Review();
-        review1.setReviewContent("1번 리뷰입니다.");
-        review1.setAuthor(testMember);
-        review1.setClub(testClub);
+        Review review1 = Review.builder().reviewContent("1번 리뷰입니다.").build();
+        review1.createReview(testMember, testClub);
         testMember.getReviews().add(review1);
         testClub.getReviews().add(review1);
 
         // review1 생성 및 필드 설정
-        Review review2 = new Review();
-        review2.setReviewContent("2번 리뷰입니다.");
-        review2.setAuthor(testMember);
-        review2.setClub(testClub);
+        Review review2 = Review.builder().reviewContent("2번 리뷰입니다.").build();;
+        review2.createReview(testMember, testClub);
         testMember.getReviews().add(review2);
         testClub.getReviews().add(review2);
 

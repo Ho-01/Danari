@@ -1,12 +1,11 @@
 package com.Danari.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Membership {
     @Id @GeneratedValue
     @Column(name = "membership_id")
@@ -23,11 +22,15 @@ public class Membership {
     @Enumerated(EnumType.STRING)
     private MemberGrade memberGrade;
 
-    public void createMembership(Member member, Club club, MemberGrade memberGrade){
+    public void createMembership(Member member, Club club){
         this.member = member;
         member.getMemberships().add(this);
         this.club = club;
         club.getMemberships().add(this);
+    }
+
+    @Builder
+    public Membership(MemberGrade memberGrade) {
         this.memberGrade = memberGrade;
     }
 }

@@ -60,10 +60,22 @@ public class ClubService {
                 ReviewDTO reviewDTO = new ReviewDTO(review.getAuthor().getUsername(), review.getClub().getClubName(), review.getReviewContent());
                 reviewDTOList.add(reviewDTO);
             }
-
-            return new ClubDetailDTO(club.getClubName(), club.getDepartment(), club.getRoomNumber(), club.getDescription(), eventDTOList, recruitmentDTOList, reviewDTOList);
+            ClubDetailDTO clubDetailDTO = new ClubDetailDTO();
+            clubDetailDTO.setClubName(club.getClubName());
+            clubDetailDTO.setDepartment(club.getDepartment());
+            clubDetailDTO.setRoomNumber(club.getRoomNumber());
+            clubDetailDTO.setDescription(club.getDescription());
+            clubDetailDTO.setEvents(eventDTOList);
+            clubDetailDTO.setRecruitments(recruitmentDTOList);
+            clubDetailDTO.setReviews(reviewDTOList);
+            return clubDetailDTO;
         } else {
             throw new EntityNotFoundException("해당하는 동아리가 없습니다. = "+clubName);
         }
+    }
+
+    public void newClubRegister(ClubDTO clubDTO) {
+        Club club = new Club(clubDTO.getClubName(), clubDTO.getRoomNumber(), clubDTO.getDepartment(), clubDTO.getDescription());
+        clubJpaRepository.save(club);
     }
 }

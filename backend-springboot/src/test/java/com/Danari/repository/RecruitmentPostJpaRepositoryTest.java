@@ -4,6 +4,7 @@ import com.Danari.domain.Club;
 import com.Danari.domain.Member;
 import com.Danari.domain.Post;
 import com.Danari.domain.PostType;
+import com.Danari.service.RecruitmentPostService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class RecruitmentPostJpaRepositoryTest {
     @Autowired
-    private EventPostJpaRepository eventPostJpaRepository;
+    private RecruitmentPostJpaRepository recruitmentPostJpaRepository;
     @Autowired
     private ClubJpaRepository clubJpaRepository;
     @Autowired
@@ -37,24 +38,24 @@ class RecruitmentPostJpaRepositoryTest {
         testMember = new Member("김승호", 32190789, "username(ID)","password");
         memberJpaRepository.save(testMember);
 
-        // 행사 게시물 생성 및 저장
-        Post eventPost1 = new Post(PostType.CLUB_RECRUITMENT, "공연일정1", "XX월 XX일에 예정된 공연입니다.", testClub, testMember);
-        testMember.getRecruitmentPosts().add(eventPost1);
-        eventPostJpaRepository.save(eventPost1);
+        // 모집 게시물 생성 및 저장
+        Post recruitmentPost1 = Post.builder().postTitle("모집일정1").postContent("XX월 XX일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
+        recruitmentPost1.createRecruitmentPost(testMember, testClub);
+        recruitmentPostJpaRepository.save(recruitmentPost1);
 
-        Post eventPost2 = new Post(PostType.CLUB_RECRUITMENT, "공연일정2", "YY월 YY일에 예정된 공연입니다.", testClub, testMember);
-        testMember.getRecruitmentPosts().add(eventPost2);
-        eventPostJpaRepository.save(eventPost2);
+        Post recruitmentPost2 = Post.builder().postTitle("모집일정2").postContent("YY월 YY일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
+        recruitmentPost2.createRecruitmentPost(testMember, testClub);
+        recruitmentPostJpaRepository.save(recruitmentPost2);
     }
 
     @Test
     void testFindRecruitmentPostsByClubId() {
         // 테스트 클럽 ID로 모집 글 찾기
-        List<Post> eventPosts = eventPostJpaRepository.findEventPostsByClubId(testClub.getId());
+        List<Post> recruitmentPosts = recruitmentPostJpaRepository.findRecruitmentPostsByClubId(testClub.getId());
 
         // 검증: 생성된 두 개의 모집글이 올바르게 조회되었는지 확인
-        Assertions.assertThat(eventPosts).hasSize(2);
-        Assertions.assertThat(eventPosts.get(0).getClub().getId()).isEqualTo(testClub.getId());
-        Assertions.assertThat(eventPosts.get(1).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(recruitmentPosts).hasSize(2);
+        Assertions.assertThat(recruitmentPosts.get(0).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(recruitmentPosts.get(1).getClub().getId()).isEqualTo(testClub.getId());
     }
 }

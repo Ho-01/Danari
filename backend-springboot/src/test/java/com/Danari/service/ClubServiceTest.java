@@ -46,12 +46,12 @@ class ClubServiceTest {
         Member member = new Member("MemberA", 32190789, "username(ID)", "password");
         memberJpaRepository.save(member);
         // 멤버십 연결, 저장
-        Membership membership1 = new Membership();
-        Membership membership2 = new Membership();
-        Membership membership3 = new Membership();
-        membership1.createMembership(member, club1, MemberGrade.PRESIDENT);
-        membership2.createMembership(member, club2, MemberGrade.MEMBER);
-        membership3.createMembership(member, club3, MemberGrade.MEMBER);
+        Membership membership1 = Membership.builder().memberGrade(MemberGrade.PRESIDENT).build();
+        Membership membership2 = Membership.builder().memberGrade(MemberGrade.MEMBER).build();
+        Membership membership3 = Membership.builder().memberGrade(MemberGrade.MEMBER).build();
+        membership1.createMembership(member, club1);
+        membership2.createMembership(member, club2);
+        membership3.createMembership(member, club3);
         membershipJpaRepository.save(membership1);
         membershipJpaRepository.save(membership2);
         membershipJpaRepository.save(membership3);
@@ -79,6 +79,14 @@ class ClubServiceTest {
     @Test
     void testClubDetailByClubName() {
         ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName("testClub1");
+        Assertions.assertThat(clubDetailDTO.getClubName()).isEqualTo("testClub1");
+    }
 
+    @Test
+    void testNewClubRegister(){
+        ClubDTO clubDTO = new ClubDTO("testClub4", "체육분과", "404", "testClub4 동아리입니다.");
+        clubService.newClubRegister(clubDTO);
+        ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName("testClub4");
+        Assertions.assertThat(clubDetailDTO.getClubName()).isEqualTo("testClub4");
     }
 }

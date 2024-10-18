@@ -29,16 +29,15 @@ public class RecruitmentPostService {
         Optional<Club> foundClub = clubJpaRepository.findByClubName(postCreateDTO.getClubName());
         Optional<Member> foundMember =  memberJpaRepository.findByUsername(postCreateDTO.getUsername());
         if(foundClub.isEmpty()){
-            throw new IllegalArgumentException("PostDTO의 ClubName 필드 잘못됨 : 존재하지 않는 동아리명입니다.");
-        }else if (foundMember.isEmpty()){
-            throw new IllegalArgumentException("PostDTO의 username 필드 잘못됨 : 존재하지 않는 사용자 이름입니다.");
+            throw new IllegalArgumentException("PostCreateDTO의 ClubName 필드 잘못됨 : 존재하지 않는 동아리명입니다.");
         }
-        Club club = foundClub.get();
-        Member member = foundMember.get();
-        Post post = new Post(postCreateDTO.getPostType(), postCreateDTO.getPostTitle(), postCreateDTO.getPostContent(), club, member);
+        if (foundMember.isEmpty()){
+            throw new IllegalArgumentException("PostCreateDTO의 username 필드 잘못됨 : 존재하지 않는 사용자 이름입니다.");
+        }
+
+        Post post = Post.builder().postType(postCreateDTO.getPostType()).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
+        post.createRecruitmentPost(foundMember.get(), foundClub.get());
         recruitmentPostJpaRepository.save(post);
-        club.getRecruitments().add(post);
-        member.getRecruitmentPosts().add(post);
     }
 
     public PostResponseDTO recruitmentPostById(Long postId) {
@@ -71,9 +70,7 @@ public class RecruitmentPostService {
             throw new IllegalArgumentException("postUpdateDTO의 postId 필드가 잘못되었습니다. 해당하는 post가 DB에 없습니다. postId: "+postUpdateDTO.getPostId());
         }
         Post post = foundPost.get();
-        post.setPostTitle(postUpdateDTO.getPostTitle());
-        post.setPostContent(postUpdateDTO.getPostContent());
-        post.setImageUrls(postUpdateDTO.getImageUrls());
+        post.updatePost(postUpdateDTO.getPostTitle(), postUpdateDTO.getPostContent(), postUpdateDTO.getImageUrls());
     }
 
     public void deleteRecruitmentPost(Long postId) {
