@@ -46,7 +46,15 @@ public class RecruitmentPostService {
             throw new IllegalArgumentException("postId에 해당하는 post를 찾을 수 없음.");
         }
         Post post = foundPost.get();
-        return new PostResponseDTO(post.getId(), post.getAuthor().getUsername(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
+        PostResponseDTO postResponseDTO = new PostResponseDTO();
+        postResponseDTO.setPostId(post.getId());
+        postResponseDTO.setUsername(post.getAuthor().getUsername());
+        postResponseDTO.setClubName(post.getClub().getClubName());
+        postResponseDTO.setPostType(post.getPostType());
+        postResponseDTO.setPostTitle(post.getPostTitle());
+        postResponseDTO.setPostContent(post.getPostContent());
+        postResponseDTO.setImageUrls(post.getImageUrls());
+        return postResponseDTO;
     }
 
     public PostListDTO recruitmentListByClubName(String clubName) {
@@ -58,7 +66,15 @@ public class RecruitmentPostService {
         Club club = foundClub.get();
         List<Post> recruitments = club.getRecruitments();
         for(Post post : recruitments){
-            PostResponseDTO postResponseDTO = new PostResponseDTO(post.getId(), post.getAuthor().getName(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
+            PostResponseDTO postResponseDTO = new PostResponseDTO();
+            postResponseDTO.setPostId(post.getId());
+            postResponseDTO.setUsername(post.getAuthor().getName());
+            postResponseDTO.setClubName(post.getClub().getClubName());
+            postResponseDTO.setPostType(post.getPostType());
+            postResponseDTO.setPostTitle(post.getPostTitle());
+            postResponseDTO.setPostContent(post.getPostContent());
+            postResponseDTO.setImageUrls(post.getImageUrls());
+
             postListDTO.getPostDTOList().add(postResponseDTO);
         }
         return postListDTO;

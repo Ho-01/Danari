@@ -22,7 +22,11 @@ public class ClubService {
         ClubListDTO clubListDTO = new ClubListDTO();
         List<Club> clubList = clubJpaRepository.findAll();
         for(Club club : clubList){
-            ClubDTO clubDTO = new ClubDTO(club.getClubName(), club.getDepartment(), club.getRoomNumber(), club.getDescription());
+            ClubDTO clubDTO = new ClubDTO();
+            clubDTO.setClubName(club.getClubName());
+            clubDTO.setDepartment(club.getDepartment());
+            clubDTO.setRoomNumber(club.getRoomNumber());
+            clubDTO.setDescription(club.getDescription());
             clubListDTO.getClubs().add(clubDTO);
         }
         return clubListDTO;
@@ -32,7 +36,11 @@ public class ClubService {
         ClubListDTO clubListDTO = new ClubListDTO();
         List<Club> clubList = clubJpaRepository.findByDepartment(department);
         for(Club club : clubList){
-            ClubDTO clubDTO = new ClubDTO(club.getClubName(), club.getDepartment(), club.getRoomNumber(), club.getDescription());
+            ClubDTO clubDTO = new ClubDTO();
+            clubDTO.setClubName(club.getClubName());
+            clubDTO.setDepartment(club.getDepartment());
+            clubDTO.setRoomNumber(club.getRoomNumber());
+            clubDTO.setDescription(club.getDescription());
             clubListDTO.getClubs().add(clubDTO);
         }
         return clubListDTO;
@@ -57,7 +65,11 @@ public class ClubService {
 
             List<ReviewDTO> reviewDTOList = new ArrayList<>();
             for(Review review : club.getReviews()){
-                ReviewDTO reviewDTO = new ReviewDTO(review.getAuthor().getUsername(), review.getClub().getClubName(), review.getReviewContent());
+                ReviewDTO reviewDTO = new ReviewDTO();
+                reviewDTO.setUsername(review.getAuthor().getUsername());
+                reviewDTO.setClubName(review.getClub().getClubName());
+                reviewDTO.setReviewContent(review.getReviewContent());
+
                 reviewDTOList.add(reviewDTO);
             }
             ClubDetailDTO clubDetailDTO = new ClubDetailDTO();

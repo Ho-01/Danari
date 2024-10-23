@@ -34,11 +34,23 @@ class RecruitmentPostServiceTest {
     private Club testClub;
     @BeforeEach
     void setup(){
-        ClubDTO clubDTO = new ClubDTO("testClub1", "공연예술분과", "101", "testClub1 동아리입니다.");
+        ClubDTO clubDTO = new ClubDTO();
+        clubDTO.setClubName("testClub1");
+        clubDTO.setDepartment("공연예술분과");
+        clubDTO.setRoomNumber("101");
+        clubDTO.setDescription("testClub1 동아리입니다.");
         clubService.newClubRegister(clubDTO);
 
-        MemberRegistrationDTO memberRegistrationDTO = new MemberRegistrationDTO("김승호", 32190789, "username", "password");
-        MembershipDTO membershipDTO = new MembershipDTO("김승호", "testClub1", MemberGrade.PRESIDENT, "urlurl");
+        MemberRegistrationDTO memberRegistrationDTO = new MemberRegistrationDTO();
+        memberRegistrationDTO.setName("김승호");
+        memberRegistrationDTO.setStudentId(32190789);
+        memberRegistrationDTO.setUsername("username");
+        memberRegistrationDTO.setPassword("password");
+        MembershipDTO membershipDTO = new MembershipDTO();
+        membershipDTO.setName("김승호");
+        membershipDTO.setClubName("testClub1");
+        membershipDTO.setRole(MemberGrade.PRESIDENT);
+        membershipDTO.setCertificateImageUrls("urlurl");
         memberRegistrationDTO.getMembershipDTOList().add(membershipDTO);
         memberService.registerMember(memberRegistrationDTO);
     }

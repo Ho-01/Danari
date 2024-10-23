@@ -84,7 +84,11 @@ class ClubServiceTest {
 
     @Test
     void testNewClubRegister(){
-        ClubDTO clubDTO = new ClubDTO("testClub4", "체육분과", "404", "testClub4 동아리입니다.");
+        ClubDTO clubDTO = new ClubDTO();
+        clubDTO.setClubName("testClub4");
+        clubDTO.setDepartment("체육분과");
+        clubDTO.setRoomNumber("404");
+        clubDTO.setDescription("testClub4 동아리입니다.");
         clubService.newClubRegister(clubDTO);
         ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName("testClub4");
         Assertions.assertThat(clubDetailDTO.getClubName()).isEqualTo("testClub4");
