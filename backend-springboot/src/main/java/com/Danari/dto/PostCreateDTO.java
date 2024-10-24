@@ -15,13 +15,4 @@ public class PostCreateDTO {
     private String postTitle; // 글 제목
     private String postContent; // 글 내용
     private List<String> imageUrls; // 이미지 url 리스트
-    @Builder
-    public PostCreateDTO(String username, String clubName, PostType postType, String postTitle, String postContent, List<String> imageUrls) {
-        this.username = username;
-        this.clubName = clubName;
-        this.postType = postType;
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.imageUrls = imageUrls;
-    }
 }

@@ -20,7 +20,7 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping
+    @PostMapping // "로그인" 페이지에서 로그인시 필요
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequestDTO){
         try {
             Authentication authentication = authenticationManager.authenticate( // 인증 시도

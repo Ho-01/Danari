@@ -48,46 +48,63 @@ public class ClubService {
 
     public ClubDetailDTO clubDetailByClubName(String clubName) {
         Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
-        if(foundClub.isPresent()){
-            Club club = foundClub.get();
+        if(foundClub.isEmpty()){ throw new EntityNotFoundException("해당하는 동아리가 없습니다. = "+clubName); }
 
-            List<PostCreateDTO> eventDTOList = new ArrayList<>();
-            for(Post post : club.getEvents()){
-                PostCreateDTO postCreateDTO = new PostCreateDTO(post.getAuthor().getUsername(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
-                eventDTOList.add(postCreateDTO);
-            }
+        Club club = foundClub.get();
 
-            List<PostCreateDTO> recruitmentDTOList = new ArrayList<>();
-            for(Post post : club.getRecruitments()){
-                PostCreateDTO postCreateDTO = new PostCreateDTO(post.getAuthor().getUsername(), post.getClub().getClubName(), post.getPostType(), post.getPostTitle(), post.getPostContent(), post.getImageUrls());
-                recruitmentDTOList.add(postCreateDTO);
-            }
+        List<PostCreateDTO> eventDTOList = new ArrayList<>();
+        for(Post post : club.getEvents()){
+            PostCreateDTO postCreateDTO = new PostCreateDTO();
+            postCreateDTO.setUsername(post.getAuthor().getUsername());
+            postCreateDTO.setClubName(post.getClub().getClubName());
+            postCreateDTO.setPostType(post.getPostType());
+            postCreateDTO.setPostTitle(post.getPostTitle());
+            postCreateDTO.setPostContent(post.getPostContent());
+            postCreateDTO.setImageUrls(post.getImageUrls());
 
-            List<ReviewDTO> reviewDTOList = new ArrayList<>();
-            for(Review review : club.getReviews()){
-                ReviewDTO reviewDTO = new ReviewDTO();
-                reviewDTO.setUsername(review.getAuthor().getUsername());
-                reviewDTO.setClubName(review.getClub().getClubName());
-                reviewDTO.setReviewContent(review.getReviewContent());
-
-                reviewDTOList.add(reviewDTO);
-            }
-            ClubDetailDTO clubDetailDTO = new ClubDetailDTO();
-            clubDetailDTO.setClubName(club.getClubName());
-            clubDetailDTO.setDepartment(club.getDepartment());
-            clubDetailDTO.setRoomNumber(club.getRoomNumber());
-            clubDetailDTO.setDescription(club.getDescription());
-            clubDetailDTO.setEvents(eventDTOList);
-            clubDetailDTO.setRecruitments(recruitmentDTOList);
-            clubDetailDTO.setReviews(reviewDTOList);
-            return clubDetailDTO;
-        } else {
-            throw new EntityNotFoundException("해당하는 동아리가 없습니다. = "+clubName);
+            eventDTOList.add(postCreateDTO);
         }
+
+        List<PostCreateDTO> recruitmentDTOList = new ArrayList<>();
+        for(Post post : club.getRecruitments()){
+            PostCreateDTO postCreateDTO = new PostCreateDTO();
+            postCreateDTO.setUsername(post.getAuthor().getUsername());
+            postCreateDTO.setClubName(post.getClub().getClubName());
+            postCreateDTO.setPostType(post.getPostType());
+            postCreateDTO.setPostTitle(post.getPostTitle());
+            postCreateDTO.setPostContent(post.getPostContent());
+            postCreateDTO.setImageUrls(post.getImageUrls());
+            recruitmentDTOList.add(postCreateDTO);
+        }
+
+        List<ReviewDTO> reviewDTOList = new ArrayList<>();
+        for(Review review : club.getReviews()){
+            ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setUsername(review.getAuthor().getUsername());
+            reviewDTO.setClubName(review.getClub().getClubName());
+            reviewDTO.setReviewContent(review.getReviewContent());
+
+            reviewDTOList.add(reviewDTO);
+        }
+
+        ClubDetailDTO clubDetailDTO = new ClubDetailDTO();
+        clubDetailDTO.setId(club.getId());
+        clubDetailDTO.setClubName(club.getClubName());
+        clubDetailDTO.setDepartment(club.getDepartment());
+        clubDetailDTO.setRoomNumber(club.getRoomNumber());
+        clubDetailDTO.setDescription(club.getDescription());
+        clubDetailDTO.setEvents(eventDTOList);
+        clubDetailDTO.setRecruitments(recruitmentDTOList);
+        clubDetailDTO.setReviews(reviewDTOList);
+        return clubDetailDTO;
     }
 
     public void newClubRegister(ClubDTO clubDTO) {
         Club club = new Club(clubDTO.getClubName(), clubDTO.getRoomNumber(), clubDTO.getDepartment(), clubDTO.getDescription());
         clubJpaRepository.save(club);
+    }
+
+    public void updateClub(ClubUpdateDTO clubUpdateDTO) {
+
     }
 }

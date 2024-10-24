@@ -74,7 +74,6 @@ public class RecruitmentPostService {
             postResponseDTO.setPostTitle(post.getPostTitle());
             postResponseDTO.setPostContent(post.getPostContent());
             postResponseDTO.setImageUrls(post.getImageUrls());
-
             postListDTO.getPostDTOList().add(postResponseDTO);
         }
         return postListDTO;

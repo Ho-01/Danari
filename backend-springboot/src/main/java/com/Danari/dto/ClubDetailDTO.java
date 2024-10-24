@@ -8,6 +8,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ClubDetailDTO {
+    private Long id; // 동아리 id
     private String clubName;       // 동아리 이름
     private String department;     // 동아리가 속한 분과
     private String roomNumber;     // 동아리 위치

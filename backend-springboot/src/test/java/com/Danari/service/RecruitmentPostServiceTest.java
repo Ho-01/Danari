@@ -3,8 +3,6 @@ package com.Danari.service;
 import com.Danari.domain.*;
 import com.Danari.dto.*;
 import com.Danari.repository.MemberJpaRepository;
-import com.Danari.repository.MembershipJpaRepository;
-import com.Danari.repository.RecruitmentPostJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,11 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -46,18 +41,25 @@ class RecruitmentPostServiceTest {
         memberRegistrationDTO.setStudentId(32190789);
         memberRegistrationDTO.setUsername("username");
         memberRegistrationDTO.setPassword("password");
-        MembershipDTO membershipDTO = new MembershipDTO();
-        membershipDTO.setName("김승호");
-        membershipDTO.setClubName("testClub1");
-        membershipDTO.setRole(MemberGrade.PRESIDENT);
-        membershipDTO.setCertificateImageUrls("urlurl");
-        memberRegistrationDTO.getMembershipDTOList().add(membershipDTO);
+        MembershipRegistrationDTO membershipRegistrationDTO = new MembershipRegistrationDTO();
+        membershipRegistrationDTO.setName("김승호");
+        membershipRegistrationDTO.setClubName("testClub1");
+        membershipRegistrationDTO.setRole(MemberGrade.PRESIDENT);
+        membershipRegistrationDTO.setCertificateImageUrls("urlurl");
+        memberRegistrationDTO.getMembershipRegistrationDTOList().add(membershipRegistrationDTO);
         memberService.registerMember(memberRegistrationDTO);
     }
 
     @Test
     void newRecruitmentPost() {
-        PostCreateDTO postCreateDTO = new PostCreateDTO("username", "testClub1", PostType.CLUB_RECRUITMENT, "postTitle", "홍보글 내용입니다.", new ArrayList<String>());
+        PostCreateDTO postCreateDTO = new PostCreateDTO();
+        postCreateDTO.setUsername("username");
+        postCreateDTO.setClubName("testClub1");
+        postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
+        postCreateDTO.setPostTitle("postTitle");
+        postCreateDTO.setPostContent("홍보글 내용입니다.");
+        postCreateDTO.setImageUrls(new ArrayList<String>());
+
         recruitmentPostService.newRecruitmentPost(postCreateDTO);
         Optional<Member> member = memberJpaRepository.findByUsername("username");
         Post post = member.get().getRecruitmentPosts().get(0);
