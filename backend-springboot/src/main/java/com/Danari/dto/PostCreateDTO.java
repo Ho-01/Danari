@@ -1,5 +1,6 @@
 package com.Danari.dto;
 
+import com.Danari.domain.Post;
 import com.Danari.domain.PostType;
 import lombok.*;
 

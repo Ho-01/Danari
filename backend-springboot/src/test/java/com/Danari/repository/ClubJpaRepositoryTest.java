@@ -40,10 +40,4 @@ class ClubJpaRepositoryTest {
         Assertions.assertThat(foundClubs.get(0).getRoomNumber()).isEqualTo("101");
     }
 
-    @Test
-    void testFindByRoomNumber() {
-        Optional<Club> foundClub = clubJpaRepository.findByRoomNumber("101");
-        Assertions.assertThat(foundClub.isPresent()).isEqualTo(true);
-        Assertions.assertThat(foundClub.get().getClubName()).isEqualTo("배드민턴 동아리");
-    }
 }

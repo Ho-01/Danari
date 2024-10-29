@@ -32,7 +32,8 @@ public class RecruitmentPostController {
 
     @GetMapping("/list/{clubName}") // "동아리 모집 공고 목록" 페이지에서 모집공고 목록 조회 시 사용
     public ResponseEntity<PostListDTO> recruitmentListByClubName(@PathVariable String clubName){
-        PostListDTO postListDTO = recruitmentPostService.recruitmentListByClubName(clubName);
+        PostListDTO postListDTO = new PostListDTO();
+        postListDTO.setPostDTOList(recruitmentPostService.recruitmentListByClubName(clubName));
         return ResponseEntity.ok(postListDTO);
     }
 

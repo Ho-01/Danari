@@ -11,5 +11,4 @@ import java.util.Optional;
 public interface ClubJpaRepository extends JpaRepository<Club, Long> {
     Optional<Club> findByClubName(String clubName); // 동아리명으로 동아리 조회
     List<Club> findByDepartment(String department); // 분과별로 동아리 조회
-    Optional<Club> findByRoomNumber(String roomNumber); // 동아리방 호실로 동아리 조회
 }

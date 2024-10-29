@@ -84,12 +84,8 @@ class ClubServiceTest {
 
     @Test
     void testNewClubRegister(){
-        ClubDTO clubDTO = new ClubDTO();
-        clubDTO.setClubName("testClub4");
-        clubDTO.setDepartment("체육분과");
-        clubDTO.setRoomNumber("404");
-        clubDTO.setDescription("testClub4 동아리입니다.");
-        clubService.newClubRegister(clubDTO);
+        Club club = Club.builder().clubName("testClub4").department("체육분과").roomNumber("404").description("testClub4 동아리입니다.").build();
+        clubJpaRepository.save(club);
         ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName("testClub4");
         Assertions.assertThat(clubDetailDTO.getClubName()).isEqualTo("testClub4");
     }

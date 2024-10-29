@@ -17,14 +17,15 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/profile")
+    @GetMapping("/profile") // 클라이언트단에서 멤버 정보가 필요할 시 사용
     public ResponseEntity<MemberResponseDTO> getMemberProfile(Authentication authentication){
         return ResponseEntity.ok(memberService.getMemberByUsername(authentication.getName()));
     }
 
-    @PostMapping // "회원가입" 페이지에서 회원가입시 필요
+    @PostMapping("/register") // "회원가입" 페이지에서 회원가입시 필요
     public ResponseEntity<String> registerMember(@RequestBody MemberRegistrationDTO memberRegistrationDTO){
         memberService.registerMember(memberRegistrationDTO);
         return ResponseEntity.ok("새 멤버 회원가입 성공");
     }
+
 }

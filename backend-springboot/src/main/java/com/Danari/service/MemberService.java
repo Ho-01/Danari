@@ -56,14 +56,7 @@ public class MemberService {
         if(foundMember.isEmpty()){
             throw new IllegalArgumentException("존재하지 않는 아이디(username)입니다 :"+username);
         }
-        Member member = foundMember.get();
-
-        MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
-        memberResponseDTO.setId(member.getId());
-        memberResponseDTO.setName(member.getName());
-        memberResponseDTO.setUsername(member.getUsername());
-        memberResponseDTO.setStudentId(member.getStudentId());
-        return memberResponseDTO;
+        return MemberResponseDTO.fromEntity(foundMember.get());
     }
 
 }

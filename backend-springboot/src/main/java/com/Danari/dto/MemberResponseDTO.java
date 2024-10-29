@@ -1,5 +1,6 @@
 package com.Danari.dto;
 
+import com.Danari.domain.Member;
 import com.Danari.domain.Membership;
 import com.Danari.domain.Post;
 import com.Danari.domain.Review;
@@ -20,4 +21,13 @@ public class MemberResponseDTO {
     private String name; // 이름
     private int studentId; // 학번
     private String username; // 아이디
+
+    public static MemberResponseDTO fromEntity(Member member){
+        MemberResponseDTO memberResponseDTO = new MemberResponseDTO();
+        memberResponseDTO.setId(member.getId());
+        memberResponseDTO.setName(member.getName());
+        memberResponseDTO.setStudentId(member.getStudentId());
+        memberResponseDTO.setUsername(member.getUsername());
+        return memberResponseDTO;
+    }
 }

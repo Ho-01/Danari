@@ -13,6 +13,7 @@ import com.Danari.repository.RecruitmentPostJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,38 +46,16 @@ public class RecruitmentPostService {
         if(foundPost.isEmpty()){
             throw new IllegalArgumentException("postId에 해당하는 post를 찾을 수 없음.");
         }
-        Post post = foundPost.get();
-        PostResponseDTO postResponseDTO = new PostResponseDTO();
-        postResponseDTO.setPostId(post.getId());
-        postResponseDTO.setUsername(post.getAuthor().getUsername());
-        postResponseDTO.setClubName(post.getClub().getClubName());
-        postResponseDTO.setPostType(post.getPostType());
-        postResponseDTO.setPostTitle(post.getPostTitle());
-        postResponseDTO.setPostContent(post.getPostContent());
-        postResponseDTO.setImageUrls(post.getImageUrls());
-        return postResponseDTO;
+        return PostResponseDTO.fromEntity(foundPost.get());
     }
 
-    public PostListDTO recruitmentListByClubName(String clubName) {
-        PostListDTO postListDTO = new PostListDTO();
+    public List<PostResponseDTO> recruitmentListByClubName(String clubName) {
         Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
         if(foundClub.isEmpty()){
             throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
         }
         Club club = foundClub.get();
-        List<Post> recruitments = club.getRecruitments();
-        for(Post post : recruitments){
-            PostResponseDTO postResponseDTO = new PostResponseDTO();
-            postResponseDTO.setPostId(post.getId());
-            postResponseDTO.setUsername(post.getAuthor().getName());
-            postResponseDTO.setClubName(post.getClub().getClubName());
-            postResponseDTO.setPostType(post.getPostType());
-            postResponseDTO.setPostTitle(post.getPostTitle());
-            postResponseDTO.setPostContent(post.getPostContent());
-            postResponseDTO.setImageUrls(post.getImageUrls());
-            postListDTO.getPostDTOList().add(postResponseDTO);
-        }
-        return postListDTO;
+        return PostListDTO.fromEntity(club.getRecruitments()).getPostDTOList();
     }
 
     public void updateRecruitmentPost(PostUpdateDTO postUpdateDTO) {
