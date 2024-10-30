@@ -1,15 +1,20 @@
 package com.Danari.dto;
 
 import com.Danari.domain.MemberGrade;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Schema(description = "동아리 가입 요청 DTO (회원가입 요청 DTO 내부에 List<>필드로 포함되어 있음)")
 public class MembershipRegistrationDTO {
-    private Long id;
-    private String name; // 멤버 이름
-    private String clubName; // 동아리 이름
-    private MemberGrade role; // PRESIDENT회장 or MEMBER부원
-    private String certificateImageUrls; // 동아리 인증 이미지 url
+    @Schema(description = "멤버 이름")
+    private String name;
+    @Schema(description = "동아리 이름")
+    private String clubName;
+    @Schema(description = "동아리 내 역할 : PRESIDENT(회장) 또는 MEMBER(부원)")
+    private MemberGrade role;
+    @Schema(description = "동아리 가입 인증 이미지 url")
+    private String certificateImageUrls;
 }

@@ -33,7 +33,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(authorize->authorize
-                        .requestMatchers("/login").permitAll() // login에 대한 접근 허용
+                        .requestMatchers("/login","/swagger-ui/**", "/v3/api-docs/**").permitAll() // login에 대한 접근 허용
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
                 .formLogin(form->form.disable()); // 기본로그인페이지 비활성화

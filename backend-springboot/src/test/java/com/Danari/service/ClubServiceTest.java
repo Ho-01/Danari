@@ -4,9 +4,8 @@ import com.Danari.domain.Club;
 import com.Danari.domain.Member;
 import com.Danari.domain.MemberGrade;
 import com.Danari.domain.Membership;
-import com.Danari.dto.ClubDTO;
+import com.Danari.dto.ClubResponseDTO;
 import com.Danari.dto.ClubDetailDTO;
-import com.Danari.dto.ClubListDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
@@ -18,8 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -59,21 +56,19 @@ class ClubServiceTest {
 
     @Test
     void testAllClubList() {
-        ClubListDTO clubListDTO = clubService.allClubList();
-        List<ClubDTO> clubDTOList = clubListDTO.getClubs();
-        Assertions.assertThat(clubDTOList).hasSize(3);
-        Assertions.assertThat(clubDTOList.get(0).getClubName()).isEqualTo("testClub1");
-        Assertions.assertThat(clubDTOList.get(1).getDescription()).isEqualTo("testClub2 동아리입니다.");
-        Assertions.assertThat(clubDTOList.get(2).getDepartment()).isEqualTo("체육분과");
+        List<ClubResponseDTO> clubResponseDTOList = clubService.allClubList();
+        Assertions.assertThat(clubResponseDTOList).hasSize(3);
+        Assertions.assertThat(clubResponseDTOList.get(0).getClubName()).isEqualTo("testClub1");
+        Assertions.assertThat(clubResponseDTOList.get(1).getDescription()).isEqualTo("testClub2 동아리입니다.");
+        Assertions.assertThat(clubResponseDTOList.get(2).getDepartment()).isEqualTo("체육분과");
     }
 
     @Test
     void testClubListByDepartment() {
-        ClubListDTO clubListDTO = clubService.clubListByDepartment("체육분과");
-        List<ClubDTO> clubDTOList = clubListDTO.getClubs();
-        Assertions.assertThat(clubDTOList).hasSize(2);
-        Assertions.assertThat(clubDTOList.get(0).getClubName()).isEqualTo("testClub2");
-        Assertions.assertThat(clubDTOList.get(1).getDescription()).isEqualTo("testClub3 동아리입니다.");
+        List<ClubResponseDTO> clubResponseDTOList = clubService.clubListByDepartment("체육분과");
+        Assertions.assertThat(clubResponseDTOList).hasSize(2);
+        Assertions.assertThat(clubResponseDTOList.get(0).getClubName()).isEqualTo("testClub2");
+        Assertions.assertThat(clubResponseDTOList.get(1).getDescription()).isEqualTo("testClub3 동아리입니다.");
     }
 
     @Test

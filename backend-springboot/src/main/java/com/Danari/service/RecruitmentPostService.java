@@ -4,7 +4,6 @@ import com.Danari.domain.Club;
 import com.Danari.domain.Member;
 import com.Danari.domain.Post;
 import com.Danari.dto.PostCreateDTO;
-import com.Danari.dto.PostListDTO;
 import com.Danari.dto.PostResponseDTO;
 import com.Danari.dto.PostUpdateDTO;
 import com.Danari.repository.ClubJpaRepository;
@@ -41,21 +40,21 @@ public class RecruitmentPostService {
         recruitmentPostJpaRepository.save(post);
     }
 
-    public PostResponseDTO recruitmentPostById(Long postId) {
-        Optional<Post> foundPost = recruitmentPostJpaRepository.findById(postId);
-        if(foundPost.isEmpty()){
-            throw new IllegalArgumentException("postId에 해당하는 post를 찾을 수 없음.");
-        }
-        return PostResponseDTO.fromEntity(foundPost.get());
-    }
-
     public List<PostResponseDTO> recruitmentListByClubName(String clubName) {
         Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
         if(foundClub.isEmpty()){
             throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
         }
         Club club = foundClub.get();
-        return PostListDTO.fromEntity(club.getRecruitments()).getPostDTOList();
+        return PostResponseDTO.fromEntityList(club.getRecruitments());
+    }
+
+    public PostResponseDTO recruitmentPostById(Long postId) {
+        Optional<Post> foundPost = recruitmentPostJpaRepository.findById(postId);
+        if(foundPost.isEmpty()){
+            throw new IllegalArgumentException("postId에 해당하는 post를 찾을 수 없음.");
+        }
+        return PostResponseDTO.fromEntity(foundPost.get());
     }
 
     public void updateRecruitmentPost(PostUpdateDTO postUpdateDTO) {

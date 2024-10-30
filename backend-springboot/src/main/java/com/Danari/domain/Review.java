@@ -43,4 +43,8 @@ public class Review {
     public Review(String reviewContent) {
         this.reviewContent = reviewContent;
     }
+
+    public void updateReview(String reviewContent) {
+        this.reviewContent = reviewContent;
+    }
 }

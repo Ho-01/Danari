@@ -21,17 +21,15 @@ public class ClubService {
     private RecruitmentPostService recruitmentPostService;
     @Autowired
     private EventPostService eventPostService;
+    @Autowired
+    private ReviewService reviewService;
 
-    public ClubListDTO allClubList() {
-        ClubListDTO clubListDTO = new ClubListDTO();
-        List<Club> clubList = clubJpaRepository.findAll();
-        return ClubListDTO.fromEntity(clubList);
+    public List<ClubResponseDTO> allClubList() {
+        return ClubResponseDTO.fromEntityList(clubJpaRepository.findAll());
     }
 
-    public ClubListDTO clubListByDepartment(String department) {
-        ClubListDTO clubListDTO = new ClubListDTO();
-        List<Club> clubList = clubJpaRepository.findByDepartment(department);
-        return ClubListDTO.fromEntity(clubList);
+    public List<ClubResponseDTO> clubListByDepartment(String department) {
+        return ClubResponseDTO.fromEntityList(clubJpaRepository.findByDepartment(department));
     }
 
     public ClubDetailDTO clubDetailByClubName(String clubName) {
@@ -42,26 +40,12 @@ public class ClubService {
 
         List<PostResponseDTO> eventDTOList = eventPostService.eventListByClubName(club.getClubName());
         List<PostResponseDTO> recruitmentDTOList = recruitmentPostService.recruitmentListByClubName(club.getClubName());
+        List<ReviewResponseDTO> reviewResponseDTOList = reviewService.reviewListByClubName(club.getClubName());
 
-        List<ReviewDTO> reviewDTOList = new ArrayList<>();
-        for(Review review : club.getReviews()){
-            ReviewDTO reviewDTO = new ReviewDTO();
-            reviewDTO.setUsername(review.getAuthor().getUsername());
-            reviewDTO.setClubName(review.getClub().getClubName());
-            reviewDTO.setReviewContent(review.getReviewContent());
-
-            reviewDTOList.add(reviewDTO);
-        }
-
-        ClubDetailDTO clubDetailDTO = new ClubDetailDTO();
-        clubDetailDTO.setId(club.getId());
-        clubDetailDTO.setClubName(club.getClubName());
-        clubDetailDTO.setDepartment(club.getDepartment());
-        clubDetailDTO.setRoomNumber(club.getRoomNumber());
-        clubDetailDTO.setDescription(club.getDescription());
+        ClubDetailDTO clubDetailDTO = ClubDetailDTO.fromEntity(club);
         clubDetailDTO.setEvents(eventDTOList);
         clubDetailDTO.setRecruitments(recruitmentDTOList);
-        clubDetailDTO.setReviews(reviewDTOList);
+        clubDetailDTO.setReviews(reviewResponseDTOList);
         return clubDetailDTO;
     }
 }

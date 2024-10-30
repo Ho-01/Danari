@@ -2,6 +2,7 @@ package com.Danari.controller;
 
 import com.Danari.dto.LoginRequestDTO;
 import com.Danari.repository.MemberJpaRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,8 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping // "로그인" 페이지에서 로그인시 필요
+    @PostMapping
+    @Operation(summary = "로그인", description = "[로그인] 페이지에서 로그인시 필요")
     public ResponseEntity<String> login(@RequestBody LoginRequestDTO loginRequestDTO){
         try {
             Authentication authentication = authenticationManager.authenticate( // 인증 시도
