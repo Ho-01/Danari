@@ -25,26 +25,26 @@ class ReviewJpaRepositoryTest {
 
     public Member testMember;
     public Club testClub;
+    public Review review1;
+    public Review review2;
 
     @BeforeEach
     void setup(){
-        // testMember와 testClub 생성 및 저장
+        // testMember 생성 및 저장
         testMember = new Member("김승호", 32190789, "username(ID)","password");
-        testClub = new Club("밴드 동아리","101","공연예술분과","밴드 동아리입니다.");
-        clubJpaRepository.save(testClub);
         memberJpaRepository.save(testMember);
 
-        // review1 생성 및 필드 설정
-        Review review1 = Review.builder().reviewContent("1번 리뷰입니다.").build();
-        review1.createReview(testMember, testClub);
-        testMember.getReviews().add(review1);
-        testClub.getReviews().add(review1);
+        // testClub 생성 및 저장
+        testClub = new Club("밴드 동아리","101","공연예술분과","밴드 동아리입니다.");
+        clubJpaRepository.save(testClub);
 
         // review1 생성 및 필드 설정
-        Review review2 = Review.builder().reviewContent("2번 리뷰입니다.").build();;
+        review1 = Review.builder().reviewContent("1번 리뷰입니다.").build();
+        review1.createReview(testMember, testClub);
+
+        // review1 생성 및 필드 설정
+        review2 = Review.builder().reviewContent("2번 리뷰입니다.").build();;
         review2.createReview(testMember, testClub);
-        testMember.getReviews().add(review2);
-        testClub.getReviews().add(review2);
 
         reviewJpaRepository.save(review1);
         reviewJpaRepository.save(review2);
@@ -54,14 +54,35 @@ class ReviewJpaRepositoryTest {
     void testFindReviewsByClubId(){
         List<Review> foundReviews = reviewJpaRepository.findReviewsByClubId(testClub.getId());
         Assertions.assertThat(foundReviews).hasSize(2);
+
         Assertions.assertThat(foundReviews.get(0).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(foundReviews.get(0).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(foundReviews.get(0).getAuthor().getId()).isEqualTo(testMember.getId());
+        Assertions.assertThat(foundReviews.get(0).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(foundReviews.get(0).getReviewContent()).isEqualTo(review1.getReviewContent());
+
         Assertions.assertThat(foundReviews.get(1).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(foundReviews.get(1).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(foundReviews.get(1).getAuthor().getId()).isEqualTo(testMember.getId());
+        Assertions.assertThat(foundReviews.get(1).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(foundReviews.get(1).getReviewContent()).isEqualTo(review2.getReviewContent());
     }
     @Test
     void testFindReviewsByAuthorId(){
         List<Review> foundReviews = reviewJpaRepository.findReviewsByAuthorId(testMember.getId());
+
         Assertions.assertThat(foundReviews).hasSize(2);
+
+        Assertions.assertThat(foundReviews.get(0).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(foundReviews.get(0).getClub().getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundReviews.get(0).getAuthor().getId()).isEqualTo(testMember.getId());
+        Assertions.assertThat(foundReviews.get(0).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(foundReviews.get(0).getReviewContent()).isEqualTo(review1.getReviewContent());
+
+        Assertions.assertThat(foundReviews.get(1).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(foundReviews.get(1).getClub().getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundReviews.get(1).getAuthor().getId()).isEqualTo(testMember.getId());
+        Assertions.assertThat(foundReviews.get(1).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(foundReviews.get(1).getReviewContent()).isEqualTo(review2.getReviewContent());
     }
 }

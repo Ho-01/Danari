@@ -25,12 +25,8 @@ class RecruitmentPostServiceTest {
     @Autowired
     ClubJpaRepository clubJpaRepository;
     @Autowired
-    ClubService clubService;
-    @Autowired
     MemberJpaRepository memberJpaRepository;
 
-    private Member testMember;
-    private Club testClub;
     @BeforeEach
     void setup(){
         Club testClub = Club.builder().clubName("testClub1").department("공연예술분과").roomNumber("101").description("testClub1 동아리입니다.").build();
@@ -60,11 +56,12 @@ class RecruitmentPostServiceTest {
         postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
         postCreateDTO.setPostTitle("postTitle");
         postCreateDTO.setPostContent("홍보글 내용입니다.");
-        postCreateDTO.setImageUrls(new ArrayList<String>());
+        postCreateDTO.setImageUrls(new ArrayList<>());
         recruitmentPostService.newRecruitmentPost(postCreateDTO);
 
 
         Optional<Member> member = memberJpaRepository.findByUsername("username");
+        Assertions.assertThat(member.isPresent()).isEqualTo(true);
         Post post = member.get().getRecruitmentPosts().get(0);
         PostResponseDTO foundPost = recruitmentPostService.recruitmentPostById(post.getId());
 
@@ -83,7 +80,7 @@ class RecruitmentPostServiceTest {
         postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
         postCreateDTO.setPostTitle("postTitle");
         postCreateDTO.setPostContent("홍보글 내용입니다.");
-        postCreateDTO.setImageUrls(new ArrayList<String>());
+        postCreateDTO.setImageUrls(new ArrayList<>());
         recruitmentPostService.newRecruitmentPost(postCreateDTO);
 
         List<PostResponseDTO> postResponseDTOList = recruitmentPostService.recruitmentListByClubName("testClub1");

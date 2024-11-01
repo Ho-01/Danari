@@ -26,6 +26,8 @@ class EventPostJpaRepositoryTest {
 
     private Club testClub;
     private Member testMember;
+    private Post eventPost1;
+    private Post eventPost2;
 
     @BeforeEach
     void setUp() {
@@ -38,23 +40,33 @@ class EventPostJpaRepositoryTest {
         memberJpaRepository.save(testMember);
 
         // 행사 게시물 생성 및 저장
-        Post eventPost1 = Post.builder().postTitle("공연일정1").postContent("XX월 XX일에 예정된 공연입니다.").postType(PostType.CLUB_EVENT).build();
+        eventPost1 = Post.builder().postTitle("공연일정1").postContent("XX월 XX일에 예정된 공연입니다.").postType(PostType.CLUB_EVENT).build();
         eventPost1.createEventPost(testMember, testClub);
         eventPostJpaRepository.save(eventPost1);
 
-        Post eventPost2 = Post.builder().postTitle("공연일정2").postContent("YY월 YY일에 예정된 공연입니다.").postType(PostType.CLUB_EVENT).build();
+        eventPost2 = Post.builder().postTitle("공연일정2").postContent("YY월 YY일에 예정된 공연입니다.").postType(PostType.CLUB_EVENT).build();
         eventPost2.createEventPost(testMember, testClub);
         eventPostJpaRepository.save(eventPost2);
     }
 
     @Test
     void testFindEventPostsByClubId() {
-        // 테스트 클럽 ID로 행사 글 찾기
         List<Post> eventPosts = eventPostJpaRepository.findEventPostsByClubId(testClub.getId());
 
-        // 검증: 생성된 두 개의 행사글이 올바르게 조회되었는지 확인
         Assertions.assertThat(eventPosts).hasSize(2);
+
         Assertions.assertThat(eventPosts.get(0).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(eventPosts.get(0).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(eventPosts.get(0).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(eventPosts.get(0).getPostTitle()).isEqualTo(eventPost1.getPostTitle());
+        Assertions.assertThat(eventPosts.get(0).getPostContent()).isEqualTo(eventPost1.getPostContent());
+        Assertions.assertThat(eventPosts.get(0).getPostType()).isEqualTo(eventPost1.getPostType());
+        
         Assertions.assertThat(eventPosts.get(1).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(eventPosts.get(1).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(eventPosts.get(1).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(eventPosts.get(1).getPostTitle()).isEqualTo(eventPost2.getPostTitle());
+        Assertions.assertThat(eventPosts.get(1).getPostContent()).isEqualTo(eventPost2.getPostContent());
+        Assertions.assertThat(eventPosts.get(1).getPostType()).isEqualTo(eventPost2.getPostType());
     }
 }

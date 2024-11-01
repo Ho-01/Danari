@@ -28,6 +28,10 @@ class RecruitmentPostJpaRepositoryTest {
     private Club testClub;
     private Member testMember;
 
+    private Post recruitmentPost1;
+
+    private Post recruitmentPost2;
+
     @BeforeEach
     void setUp() {
         // 동아리 생성 및 저장
@@ -39,23 +43,35 @@ class RecruitmentPostJpaRepositoryTest {
         memberJpaRepository.save(testMember);
 
         // 모집 게시물 생성 및 저장
-        Post recruitmentPost1 = Post.builder().postTitle("모집일정1").postContent("XX월 XX일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
+        recruitmentPost1 = Post.builder().postTitle("모집일정1").postContent("XX월 XX일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
         recruitmentPost1.createRecruitmentPost(testMember, testClub);
         recruitmentPostJpaRepository.save(recruitmentPost1);
 
-        Post recruitmentPost2 = Post.builder().postTitle("모집일정2").postContent("YY월 YY일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
+        recruitmentPost2 = Post.builder().postTitle("모집일정2").postContent("YY월 YY일에 예정된 모집입니다.").postType(PostType.CLUB_RECRUITMENT).build();
         recruitmentPost2.createRecruitmentPost(testMember, testClub);
         recruitmentPostJpaRepository.save(recruitmentPost2);
     }
 
     @Test
     void testFindRecruitmentPostsByClubId() {
-        // 테스트 클럽 ID로 모집 글 찾기
         List<Post> recruitmentPosts = recruitmentPostJpaRepository.findRecruitmentPostsByClubId(testClub.getId());
 
-        // 검증: 생성된 두 개의 모집글이 올바르게 조회되었는지 확인
         Assertions.assertThat(recruitmentPosts).hasSize(2);
+
         Assertions.assertThat(recruitmentPosts.get(0).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(recruitmentPosts.get(0).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(recruitmentPosts.get(0).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(recruitmentPosts.get(0).getPostTitle()).isEqualTo(recruitmentPost1.getPostTitle());
+        Assertions.assertThat(recruitmentPosts.get(0).getPostContent()).isEqualTo(recruitmentPost1.getPostContent());
+        Assertions.assertThat(recruitmentPosts.get(0).getPostType()).isEqualTo(recruitmentPost1.getPostType());
+
         Assertions.assertThat(recruitmentPosts.get(1).getClub().getId()).isEqualTo(testClub.getId());
+        Assertions.assertThat(recruitmentPosts.get(1).getClub().getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(recruitmentPosts.get(1).getAuthor().getName()).isEqualTo(testMember.getName());
+        Assertions.assertThat(recruitmentPosts.get(1).getPostTitle()).isEqualTo(recruitmentPost2.getPostTitle());
+        Assertions.assertThat(recruitmentPosts.get(1).getPostContent()).isEqualTo(recruitmentPost2.getPostContent());
+        Assertions.assertThat(recruitmentPosts.get(1).getPostType()).isEqualTo(recruitmentPost2.getPostType());
     }
+
+
 }
