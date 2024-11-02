@@ -30,7 +30,7 @@ public class Review {
         club.getReviews().add(this);
     }
 
-    public void updateReveiw(String reviewContent){
+    public void updateReview(String reviewContent) {
         this.reviewContent = reviewContent;
     }
 
@@ -40,11 +40,9 @@ public class Review {
     }
 
     @Builder
-    public Review(String reviewContent) {
+    public Review(String reviewContent, Member author, Club club) {
         this.reviewContent = reviewContent;
-    }
-
-    public void updateReview(String reviewContent) {
-        this.reviewContent = reviewContent;
+        this.author = author;
+        this.club = club;
     }
 }

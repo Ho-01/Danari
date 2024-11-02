@@ -26,7 +26,7 @@ public class ReviewResponseDTO {
     public static ReviewResponseDTO fromEntity(Review review){
         ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO();
         reviewResponseDTO.setId(review.getId());
-        reviewResponseDTO.setUsername(review.getAuthor().getName());
+        reviewResponseDTO.setUsername(review.getAuthor().getUsername());
         reviewResponseDTO.setClubName(review.getClub().getClubName());
         reviewResponseDTO.setReviewContent(review.getReviewContent());
         return reviewResponseDTO;

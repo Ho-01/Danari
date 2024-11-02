@@ -1,13 +1,12 @@
 package com.Danari.service;
 
-import com.Danari.domain.Club;
-import com.Danari.domain.Member;
-import com.Danari.domain.Post;
+import com.Danari.domain.*;
 import com.Danari.dto.PostCreateDTO;
 import com.Danari.dto.PostResponseDTO;
 import com.Danari.dto.PostUpdateDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
+import com.Danari.repository.MembershipJpaRepository;
 import com.Danari.repository.RecruitmentPostJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,8 @@ public class RecruitmentPostService {
     private ClubJpaRepository clubJpaRepository;
     @Autowired
     private MemberJpaRepository memberJpaRepository;
+    @Autowired
+    private MembershipJpaRepository membershipJpaRepository;
 
     public void newRecruitmentPost(PostCreateDTO postCreateDTO) {
         Optional<Club> foundClub = clubJpaRepository.findByClubName(postCreateDTO.getClubName());
@@ -33,6 +34,13 @@ public class RecruitmentPostService {
         }
         if (foundMember.isEmpty()){
             throw new IllegalArgumentException("PostCreateDTO의 username 필드 잘못됨 : 존재하지 않는 사용자 이름입니다.");
+        }
+        Optional<Membership> foundMembership = membershipJpaRepository.findByMemberAndClub(foundMember.get(), foundClub.get());
+        if(foundMembership.isEmpty()){
+            throw new IllegalArgumentException("PostCreateDTO의 username: "+postCreateDTO.getUsername()+" 에 해당하는 사용자는 ClubName : "+postCreateDTO.getClubName()+"에 해당하는 동아리에 가입되어 있지 않습니다.");
+        }
+        if(foundMembership.get().getMemberGrade()!= MemberGrade.PRESIDENT){
+            throw new IllegalArgumentException("RecruitmentPost의 작성 권한은 PRESIDENT 입니다. 작성 권한이 없습니다.");
         }
 
         Post post = Post.builder().postType(postCreateDTO.getPostType()).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();

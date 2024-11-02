@@ -24,4 +24,15 @@ public class PostCreateDTO {
     private String postContent;
     @Schema(description = "첨부 이미지 url 리스트")
     private List<String> imageUrls;
+
+    public static PostCreateDTO fromEntity(Post post) {
+        PostCreateDTO PostCreateDTO = new PostCreateDTO();
+        PostCreateDTO.setUsername(post.getAuthor().getUsername());
+        PostCreateDTO.setClubName(post.getClub().getClubName());
+        PostCreateDTO.setPostType(post.getPostType());
+        PostCreateDTO.setPostTitle(post.getPostTitle());
+        PostCreateDTO.setPostContent(post.getPostContent());
+        PostCreateDTO.setImageUrls(post.getImageUrls());
+        return PostCreateDTO;
+    }
 }

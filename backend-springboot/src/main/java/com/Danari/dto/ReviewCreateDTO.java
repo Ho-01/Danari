@@ -1,5 +1,6 @@
 package com.Danari.dto;
 
+import com.Danari.domain.Review;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -14,4 +15,12 @@ public class ReviewCreateDTO {
     private String clubName;
     @Schema(description = "후기 내용")
     private String reviewContent;
+
+    public static ReviewCreateDTO fromEntity(Review review) {
+        ReviewCreateDTO reviewCreateDTO = new ReviewCreateDTO();
+        reviewCreateDTO.setReviewContent(review.getReviewContent());
+        reviewCreateDTO.setUsername(review.getAuthor().getUsername());
+        reviewCreateDTO.setClubName(review.getClub().getClubName());
+        return reviewCreateDTO;
+    }
 }

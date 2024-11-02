@@ -76,13 +76,12 @@ class MemberServiceTest {
         Assertions.assertThat(savedMember.get().getName()).isEqualTo("김승호");
         Assertions.assertThat(savedMember.get().getStudentId()).isEqualTo(32190789);
 
-        Optional<List<Membership>> foundMemberships = membershipJpaRepository.findByMember(savedMember.get());
-        Assertions.assertThat(foundMemberships.isPresent()).isEqualTo(true);
-        Assertions.assertThat(foundMemberships.get()).hasSize(2);
-        Assertions.assertThat(foundMemberships.get().get(0).getMember().getName()).isEqualTo("김승호");
-        Assertions.assertThat(foundMemberships.get().get(0).getClub().getClubName()).isEqualTo("testClub1");
-        Assertions.assertThat(foundMemberships.get().get(1).getMember().getName()).isEqualTo("김승호");
-        Assertions.assertThat(foundMemberships.get().get(1).getClub().getClubName()).isEqualTo("testClub2");
+        List<Membership> foundMemberships = membershipJpaRepository.findByMember(savedMember.get());
+        Assertions.assertThat(foundMemberships).hasSize(2);
+        Assertions.assertThat(foundMemberships.get(0).getMember().getName()).isEqualTo("김승호");
+        Assertions.assertThat(foundMemberships.get(0).getClub().getClubName()).isEqualTo("testClub1");
+        Assertions.assertThat(foundMemberships.get(1).getMember().getName()).isEqualTo("김승호");
+        Assertions.assertThat(foundMemberships.get(1).getClub().getClubName()).isEqualTo("testClub2");
 
     }
 

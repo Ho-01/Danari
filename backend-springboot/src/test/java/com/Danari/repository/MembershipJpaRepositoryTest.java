@@ -58,21 +58,19 @@ class MembershipJpaRepositoryTest {
 
     @Test
     void findByMemberTest() {
-        Optional<List<Membership>> foundMemberships1 = membershipJpaRepository.findByMember(testMember1);
-        Assertions.assertThat(foundMemberships1.isPresent()).isEqualTo(true);
-        Assertions.assertThat(foundMemberships1.get().size()).isEqualTo(2);
-        Assertions.assertThat(foundMemberships1.get().get(0).getMemberGrade()).isEqualTo(testMembership1.getMemberGrade());
-        Assertions.assertThat(foundMemberships1.get().get(0).getMember()).isEqualTo(testMember1);
-        Assertions.assertThat(foundMemberships1.get().get(0).getClub()).isEqualTo(testClub1);
-        Assertions.assertThat(foundMemberships1.get().get(1).getMemberGrade()).isEqualTo(testMembership2.getMemberGrade());
-        Assertions.assertThat(foundMemberships1.get().get(1).getMember()).isEqualTo(testMember1);
-        Assertions.assertThat(foundMemberships1.get().get(1).getClub()).isEqualTo(testClub2);
+        List<Membership> foundMemberships1 = membershipJpaRepository.findByMember(testMember1);
+        Assertions.assertThat(foundMemberships1.size()).isEqualTo(2);
+        Assertions.assertThat(foundMemberships1.get(0).getMemberGrade()).isEqualTo(testMembership1.getMemberGrade());
+        Assertions.assertThat(foundMemberships1.get(0).getMember()).isEqualTo(testMember1);
+        Assertions.assertThat(foundMemberships1.get(0).getClub()).isEqualTo(testClub1);
+        Assertions.assertThat(foundMemberships1.get(1).getMemberGrade()).isEqualTo(testMembership2.getMemberGrade());
+        Assertions.assertThat(foundMemberships1.get(1).getMember()).isEqualTo(testMember1);
+        Assertions.assertThat(foundMemberships1.get(1).getClub()).isEqualTo(testClub2);
 
-        Optional<List<Membership>> foundMemberships2 = membershipJpaRepository.findByMember(testMember2);
-        Assertions.assertThat(foundMemberships2.isPresent()).isEqualTo(true);
-        Assertions.assertThat(foundMemberships2.get().size()).isEqualTo(1);
-        Assertions.assertThat(foundMemberships2.get().get(0).getMemberGrade()).isEqualTo(testMembership3.getMemberGrade());
-        Assertions.assertThat(foundMemberships2.get().get(0).getMember()).isEqualTo(testMember2);
-        Assertions.assertThat(foundMemberships2.get().get(0).getClub()).isEqualTo(testClub1);
+        List<Membership> foundMemberships2 = membershipJpaRepository.findByMember(testMember2);
+        Assertions.assertThat(foundMemberships2.size()).isEqualTo(1);
+        Assertions.assertThat(foundMemberships2.get(0).getMemberGrade()).isEqualTo(testMembership3.getMemberGrade());
+        Assertions.assertThat(foundMemberships2.get(0).getMember()).isEqualTo(testMember2);
+        Assertions.assertThat(foundMemberships2.get(0).getClub()).isEqualTo(testClub1);
     }
 }
