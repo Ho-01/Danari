@@ -1,4 +1,4 @@
-package com.Danari.service;
+package com.Danari.security;
 
 import com.Danari.domain.Member;
 import com.Danari.repository.MemberJpaRepository;

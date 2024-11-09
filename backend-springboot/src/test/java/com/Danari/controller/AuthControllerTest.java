@@ -16,12 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LoginControllerTest {
+class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -32,26 +31,28 @@ class LoginControllerTest {
     void setUp() {
         // Mocking AuthenticationManager to return a valid authentication object
         Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
         Mockito.when(authentication.getName()).thenReturn("testUser");
+        Mockito.when(authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken("testUser","password"))
+        ).thenReturn(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     @Test
     void testLoginSuccess() throws Exception {
+
         // Create a valid login request DTO
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO();
         loginRequestDTO.setUserId("testUser");
         loginRequestDTO.setPassword("password");
 
-        Mockito.when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken("testUser","password"))
-        ).thenReturn(SecurityContextHolder.getContext().getAuthentication());
-
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(loginRequestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("로그인 성공"));
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.refreshToken").exists());
     }
 
 

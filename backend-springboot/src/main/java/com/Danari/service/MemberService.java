@@ -10,6 +10,7 @@ import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,8 @@ import java.util.Optional;
 
 @Service
 public class MemberService {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private MemberJpaRepository memberJpaRepository;
     @Autowired
@@ -34,7 +37,7 @@ public class MemberService {
         }
 
         // 멤버 생성 -> DTO로 받은 정보 입력 -> DB에 저장
-        Member newMember = new Member(memberRegistrationDTO.getName(), memberRegistrationDTO.getStudentId(), memberRegistrationDTO.getUsername(), memberRegistrationDTO.getPassword());
+        Member newMember = new Member(memberRegistrationDTO.getName(), memberRegistrationDTO.getStudentId(), memberRegistrationDTO.getUsername(), passwordEncoder.encode(memberRegistrationDTO.getPassword()) );
         memberJpaRepository.save(newMember);
 
         // 연관관계(membership 테이블) 설정
