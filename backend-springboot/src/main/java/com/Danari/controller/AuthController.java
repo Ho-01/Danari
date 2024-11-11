@@ -25,7 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "로그인", description = "[로그인] 페이지에서 로그인시 필요")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
         try {
             Authentication authentication = authenticationManager.authenticate( // 인증 시도
                     new UsernamePasswordAuthenticationToken(
@@ -37,7 +37,7 @@ public class AuthController {
             String refreshToken = jwtTokenUtil.generateRefreshToken(loginRequestDTO.getUserId());
             return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken));
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("login failed");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponseDTO());
         }
     }
 

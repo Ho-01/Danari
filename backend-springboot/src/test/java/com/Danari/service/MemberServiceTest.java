@@ -32,30 +32,32 @@ class MemberServiceTest {
     @Autowired
     private MembershipJpaRepository membershipJpaRepository;
 
+    private Club testClub1;
+    private Club testClub2;
+    private MembershipRegistrationDTO membershipRegistrationDTO1;
+    private MembershipRegistrationDTO membershipRegistrationDTO2;
     private MemberRegistrationDTO testMemberRegistrationDTO;
 
     @BeforeEach
     void setup(){
         //testClub1 값 설정
-        Club testClub1 = new Club("testClub1", "101", "dep1", "this is testClub1");
+        testClub1 = new Club("testClub1", "101", "dep1", "this is testClub1");
         clubJpaRepository.save(testClub1);
         //testClub2 값 설정
-        Club testClub2 = new Club("testClub2", "202", "dep1", "this is testClub2");
+        testClub2 = new Club("testClub2", "202", "dep1", "this is testClub2");
         clubJpaRepository.save(testClub2);
 
-        // testMembershipDTO1 값 설정
-        MembershipRegistrationDTO testMembershipRegistrationDTO1 = new MembershipRegistrationDTO();
-        testMembershipRegistrationDTO1.setName("김승호");
-        testMembershipRegistrationDTO1.setClubName("testClub1");
-        testMembershipRegistrationDTO1.setRole(MemberGrade.PRESIDENT);
-        testMembershipRegistrationDTO1.setCertificateImageUrls("url1");
+        // membershipRegistrationDTO1 값 설정
+        membershipRegistrationDTO1 = new MembershipRegistrationDTO();
+        membershipRegistrationDTO1.setName("김승호");
+        membershipRegistrationDTO1.setClubName("testClub1");
+        membershipRegistrationDTO1.setRole(MemberGrade.PRESIDENT);
 
-        // testMembershipDTO2 값 설정
-        MembershipRegistrationDTO testMembershipRegistrationDTO2 = new MembershipRegistrationDTO();
-        testMembershipRegistrationDTO2.setName("김승호");
-        testMembershipRegistrationDTO2.setClubName("testClub2");
-        testMembershipRegistrationDTO2.setRole(MemberGrade.MEMBER);
-        testMembershipRegistrationDTO2.setCertificateImageUrls("url2");
+        // membershipRegistrationDTO2 값 설정
+        membershipRegistrationDTO2 = new MembershipRegistrationDTO();
+        membershipRegistrationDTO2.setName("김승호");
+        membershipRegistrationDTO2.setClubName("testClub2");
+        membershipRegistrationDTO2.setRole(MemberGrade.MEMBER);
 
         // testMemberRegistrationDTO 값 설정
         testMemberRegistrationDTO = new MemberRegistrationDTO();
@@ -63,33 +65,38 @@ class MemberServiceTest {
         testMemberRegistrationDTO.setStudentId(32190789);
         testMemberRegistrationDTO.setUsername("username");
         testMemberRegistrationDTO.setPassword("password");
-        testMemberRegistrationDTO.getMembershipRegistrationDTOList().add(testMembershipRegistrationDTO1);
-        testMemberRegistrationDTO.getMembershipRegistrationDTOList().add(testMembershipRegistrationDTO2);
+        testMemberRegistrationDTO.getMembershipRegistrationDTOList().add(membershipRegistrationDTO1);
+        testMemberRegistrationDTO.getMembershipRegistrationDTOList().add(membershipRegistrationDTO2);
     }
 
     @Test
     void testRegisterMember(){
         memberService.registerMember(testMemberRegistrationDTO);
 
-        Optional<Member> savedMember = memberJpaRepository.findByUsername("username");
+        Optional<Member> savedMember = memberJpaRepository.findByUsername(testMemberRegistrationDTO.getUsername());
         Assertions.assertThat(savedMember.isPresent()).isEqualTo(true);
-        Assertions.assertThat(savedMember.get().getName()).isEqualTo("김승호");
-        Assertions.assertThat(savedMember.get().getStudentId()).isEqualTo(32190789);
+        Assertions.assertThat(savedMember.get().getName()).isEqualTo(testMemberRegistrationDTO.getName());
+        Assertions.assertThat(savedMember.get().getStudentId()).isEqualTo(testMemberRegistrationDTO.getStudentId());
 
-        List<Membership> foundMemberships = membershipJpaRepository.findByMember(savedMember.get());
-        Assertions.assertThat(foundMemberships).hasSize(2);
-        Assertions.assertThat(foundMemberships.get(0).getMember().getName()).isEqualTo("김승호");
-        Assertions.assertThat(foundMemberships.get(0).getClub().getClubName()).isEqualTo("testClub1");
-        Assertions.assertThat(foundMemberships.get(1).getMember().getName()).isEqualTo("김승호");
-        Assertions.assertThat(foundMemberships.get(1).getClub().getClubName()).isEqualTo("testClub2");
+        Optional<Member> foundMember = memberJpaRepository.findByUsername(testMemberRegistrationDTO.getUsername());
+        Assertions.assertThat(foundMember.isPresent()).isEqualTo(true);
 
+        List<Membership> foundMembership = membershipJpaRepository.findByMember(foundMember.get());
+        Assertions.assertThat(foundMembership.size()).isEqualTo(testMemberRegistrationDTO.getMembershipRegistrationDTOList().size());
+        Assertions.assertThat(foundMembership.get(0).getMember()).isEqualTo(foundMember.get());
+        Assertions.assertThat(foundMembership.get(0).getClub()).isEqualTo(testClub1);
+        Assertions.assertThat(foundMembership.get(0).getMemberGrade()).isEqualTo(membershipRegistrationDTO1.getRole());
+        Assertions.assertThat(foundMembership.get(1).getMember()).isEqualTo(foundMember.get());
+        Assertions.assertThat(foundMembership.get(1).getClub()).isEqualTo(testClub2);
+        Assertions.assertThat(foundMembership.get(1).getMemberGrade()).isEqualTo(membershipRegistrationDTO2.getRole());
     }
 
     @Test
     void testGetMemberByUsername(){
         memberService.registerMember(testMemberRegistrationDTO);
-        MemberResponseDTO memberResponseDTO = memberService.getMemberByUsername("username");
-
-        Assertions.assertThat(memberResponseDTO.getName()).isEqualTo("김승호");
+        MemberResponseDTO memberResponseDTO = memberService.getMemberByUsername(testMemberRegistrationDTO.getUsername());
+        Assertions.assertThat(memberResponseDTO.getName()).isEqualTo(testMemberRegistrationDTO.getName());
+        Assertions.assertThat(memberResponseDTO.getUsername()).isEqualTo(testMemberRegistrationDTO.getUsername());
+        Assertions.assertThat(memberResponseDTO.getStudentId()).isEqualTo(testMemberRegistrationDTO.getStudentId());
     }
 }

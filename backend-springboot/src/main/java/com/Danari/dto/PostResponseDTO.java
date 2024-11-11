@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class PostResponseDTO {
     private String postContent;
     @Schema(description = "첨부 이미지 url 리스트")
     private List<String> imageUrls;
+    @Schema(description = "글 작성 일시")
+    private LocalDateTime createdAt;
 
     public static PostResponseDTO fromEntity(Post post) {
         PostResponseDTO postResponseDTO = new PostResponseDTO();
@@ -40,6 +43,7 @@ public class PostResponseDTO {
         postResponseDTO.setPostTitle(post.getPostTitle());
         postResponseDTO.setPostContent(post.getPostContent());
         postResponseDTO.setImageUrls(post.getImageUrls());
+        postResponseDTO.setCreatedAt(post.getCreatedAt());
         return postResponseDTO;
     }
     

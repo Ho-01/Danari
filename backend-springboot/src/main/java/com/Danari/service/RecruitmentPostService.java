@@ -10,9 +10,11 @@ import com.Danari.repository.MembershipJpaRepository;
 import com.Danari.repository.RecruitmentPostJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -49,11 +51,15 @@ public class RecruitmentPostService {
     }
 
     public List<PostResponseDTO> recruitmentListByClubName(String clubName) {
+
         Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
         if(foundClub.isEmpty()){
             throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
         }
         Club club = foundClub.get();
+        if(club.getRecruitments().isEmpty()){
+            throw new NoSuchElementException("해당 동아리에 모집공고글이 존재하지 않습니다.");
+        }
         return PostResponseDTO.fromEntityList(club.getRecruitments());
     }
 
@@ -74,7 +80,16 @@ public class RecruitmentPostService {
         post.updatePost(postUpdateDTO.getPostTitle(), postUpdateDTO.getPostContent(), postUpdateDTO.getImageUrls());
     }
 
+    @Transactional
     public void deleteRecruitmentPost(Long postId) {
+        Optional<Post> foundPost = recruitmentPostJpaRepository.findById(postId);
+        if(foundPost.isEmpty()){
+            throw new IllegalArgumentException("이미 삭제된 글이거나, id가 잘못되었습니다");
+        }
+        // 연관된 Club 엔티티에서 모집글 제거
+        Club club = foundPost.get().getClub();
+        club.getRecruitments().remove(foundPost.get());
+
         recruitmentPostJpaRepository.deleteById(postId);
     }
 }

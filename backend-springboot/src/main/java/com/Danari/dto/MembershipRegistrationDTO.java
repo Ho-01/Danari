@@ -1,6 +1,7 @@
 package com.Danari.dto;
 
 import com.Danari.domain.MemberGrade;
+import com.Danari.domain.Membership;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -17,4 +18,12 @@ public class MembershipRegistrationDTO {
     private MemberGrade role;
     @Schema(description = "동아리 가입 인증 이미지 url")
     private String certificateImageUrls;
+
+    public static MembershipRegistrationDTO fromEntity(Membership membership){
+        MembershipRegistrationDTO membershipRegistrationDTO = new MembershipRegistrationDTO();
+        membershipRegistrationDTO.setName(membership.getMember().getName());
+        membershipRegistrationDTO.setClubName(membership.getClub().getClubName());
+        membershipRegistrationDTO.setRole(membership.getMemberGrade());
+        return membershipRegistrationDTO;
+    }
 }

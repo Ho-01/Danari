@@ -16,8 +16,6 @@ import java.util.List;
 public class PostUpdateDTO {
     @Schema(description = "데이터베이스에 저장된 고유 Post(게시글) Id")
     private Long postId;
-    @Schema(description = "글 유형 : RECRUITMENT(모집글)인지 EVENT(공지글)인지 구분")
-    private PostType postType;
     @Schema(description = "글 제목")
     private String postTitle;
     @Schema(description = "글 내용")
