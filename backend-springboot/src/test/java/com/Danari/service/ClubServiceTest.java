@@ -89,7 +89,7 @@ class ClubServiceTest {
     }
 
     @Test
-    void testAllClubList() {
+    void allClubListTest() {
         List<ClubResponseDTO> clubResponseDTOList = clubService.allClubList();
         Assertions.assertThat(clubResponseDTOList).hasSize(3);
 
@@ -110,7 +110,7 @@ class ClubServiceTest {
     }
 
     @Test
-    void testClubListByDepartment() {
+    void clubListByDepartmentTest() {
         List<ClubResponseDTO> clubResponseDTOList = clubService.clubListByDepartment("체육분과");
         Assertions.assertThat(clubResponseDTOList).hasSize(2);
 
@@ -126,7 +126,7 @@ class ClubServiceTest {
     }
 
     @Test
-    void testClubDetailByClubName() {
+    void clubDetailByClubNameTest() {
         ClubDetailDTO clubDetailDTO = clubService.clubDetailByClubName(club1.getClubName());
 
         Assertions.assertThat(clubDetailDTO.getRecruitments()).hasSize(1);

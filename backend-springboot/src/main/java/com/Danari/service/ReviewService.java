@@ -13,6 +13,7 @@ import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.ReviewJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,9 @@ public class ReviewService {
             throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
         }
         Club club = foundClub.get();
+        if(club.getReviews().isEmpty()){
+            throw new IllegalArgumentException("해당 동아리에 리뷰가 존재하지 않습니다.");
+        }
         return ReviewResponseDTO.fromEntityList(club.getReviews());
     }
 
@@ -67,7 +71,15 @@ public class ReviewService {
         review.updateReview(ReviewUpdateDTO.getReviewContent());
     }
 
+    @Transactional
     public void deleteReview(Long reviewId) {
+        Optional<Review> foundReview = reviewJpaRepository.findById(reviewId);
+        if(foundReview.isEmpty()){
+            throw new IllegalArgumentException("리뷰가 이미 삭제되었거나, reviewId에 해당하는 리뷰가 존재하지 않습니다.");
+        }
+        Club club = foundReview.get().getClub();
+        club.getReviews().remove(foundReview.get());
+
         reviewJpaRepository.deleteById(reviewId);
     }
 }

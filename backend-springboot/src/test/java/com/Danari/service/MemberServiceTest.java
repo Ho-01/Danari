@@ -70,7 +70,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void testRegisterMember(){
+    void registerMemberTest(){
         memberService.registerMember(testMemberRegistrationDTO);
 
         Optional<Member> savedMember = memberJpaRepository.findByUsername(testMemberRegistrationDTO.getUsername());
@@ -92,7 +92,7 @@ class MemberServiceTest {
     }
 
     @Test
-    void testGetMemberByUsername(){
+    void getMemberByUsernameTest(){
         memberService.registerMember(testMemberRegistrationDTO);
         MemberResponseDTO memberResponseDTO = memberService.getMemberByUsername(testMemberRegistrationDTO.getUsername());
         Assertions.assertThat(memberResponseDTO.getName()).isEqualTo(testMemberRegistrationDTO.getName());

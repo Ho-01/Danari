@@ -1,11 +1,12 @@
 package com.Danari.service;
 
 import com.Danari.domain.*;
-import com.Danari.dto.*;
+import com.Danari.dto.PostCreateDTO;
+import com.Danari.dto.PostResponseDTO;
+import com.Danari.dto.PostUpdateDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
-import com.Danari.repository.RecruitmentPostJpaRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,28 +17,27 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class RecruitmentPostServiceTest {
+class EventPostServiceTest {
     @Autowired
-    RecruitmentPostService recruitmentPostService;
+    private EventPostService eventPostService;
     @Autowired
-    RecruitmentPostJpaRepository recruitmentPostJpaRepository;
+    private ClubJpaRepository clubJpaRepository;
     @Autowired
-    MemberJpaRepository memberJpaRepository;
+    private MemberJpaRepository memberJpaRepository;
     @Autowired
-    ClubJpaRepository clubJpaRepository;
-    @Autowired
-    MembershipJpaRepository membershipJpaRepository;
-
+    private MembershipJpaRepository membershipJpaRepository;
     private Club testClub;
     private Member testMember;
     private Membership testMembership;
     private PostCreateDTO postCreateDTO;
+
     @BeforeEach
-    void setup(){
+    void setUp() {
         testClub = Club.builder().clubName("testClub1").department("공연예술분과").roomNumber("101").description("testClub1 동아리입니다.").build();
         clubJpaRepository.save(testClub);
 
@@ -53,15 +53,15 @@ class RecruitmentPostServiceTest {
         postCreateDTO.setClubName(testClub.getClubName());
         postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
         postCreateDTO.setPostTitle("postTitle");
-        postCreateDTO.setPostContent("홍보글 내용입니다.");
+        postCreateDTO.setPostContent("행사글 내용입니다.");
         postCreateDTO.setImageUrls(new ArrayList<>());
     }
 
     @Test
-    void newRecruitmentPostTest() {
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
+    void newEventPostTest() {
+        eventPostService.newEventPost(postCreateDTO);
 
-        List<PostResponseDTO> foundPost = recruitmentPostService.recruitmentListByClubName(testClub.getClubName());
+        List<PostResponseDTO> foundPost = eventPostService.eventListByClubName(testClub.getClubName());
         Assertions.assertThat(foundPost.size()).isEqualTo(1);
         Assertions.assertThat(foundPost.get(0).getUsername()).isEqualTo(testMember.getUsername());
         Assertions.assertThat(foundPost.get(0).getClubName()).isEqualTo(testClub.getClubName());
@@ -71,11 +71,11 @@ class RecruitmentPostServiceTest {
     }
 
     @Test
-    void recruitmentPostByIdTest() {
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
+    void eventListByClubNameTest() {
+        eventPostService.newEventPost(postCreateDTO);
 
-        PostResponseDTO postResponseDTO = recruitmentPostService.recruitmentListByClubName(testClub.getClubName()).get(0);
-        PostResponseDTO foundPost = recruitmentPostService.recruitmentPostById(postResponseDTO.getPostId());
+        PostResponseDTO postResponseDTO = eventPostService.eventListByClubName(testClub.getClubName()).get(0);
+        PostResponseDTO foundPost = eventPostService.eventPostById(postResponseDTO.getPostId());
         Assertions.assertThat(foundPost.getUsername()).isEqualTo(testMember.getUsername());
         Assertions.assertThat(foundPost.getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
@@ -84,38 +84,30 @@ class RecruitmentPostServiceTest {
     }
 
     @Test
-    void recruitmentListByClubNameTest() {
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
+    void eventPostByIdTest() {
+        eventPostService.newEventPost(postCreateDTO);
 
-        List<PostResponseDTO> foundPost = recruitmentPostService.recruitmentListByClubName(testClub.getClubName());
-        Assertions.assertThat(foundPost.size()).isEqualTo(2);
-
-        Assertions.assertThat(foundPost.get(0).getUsername()).isEqualTo(testMember.getUsername());
-        Assertions.assertThat(foundPost.get(0).getClubName()).isEqualTo(testClub.getClubName());
-        Assertions.assertThat(foundPost.get(0).getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
-        Assertions.assertThat(foundPost.get(0).getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(postCreateDTO.getPostType());
-
-        Assertions.assertThat(foundPost.get(0).getUsername()).isEqualTo(testMember.getUsername());
-        Assertions.assertThat(foundPost.get(0).getClubName()).isEqualTo(testClub.getClubName());
-        Assertions.assertThat(foundPost.get(0).getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
-        Assertions.assertThat(foundPost.get(0).getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(postCreateDTO.getPostType());
+        PostResponseDTO postResponseDTO = eventPostService.eventListByClubName(testClub.getClubName()).get(0);
+        PostResponseDTO foundPost = eventPostService.eventPostById(postResponseDTO.getPostId());
+        Assertions.assertThat(foundPost.getUsername()).isEqualTo(testMember.getUsername());
+        Assertions.assertThat(foundPost.getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(foundPost.getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
+        Assertions.assertThat(foundPost.getPostContent()).isEqualTo(postCreateDTO.getPostContent());
+        Assertions.assertThat(foundPost.getPostType()).isEqualTo(postCreateDTO.getPostType());
     }
 
     @Test
-    void updateRecruitmentPostTest() {
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
-        Long postId = recruitmentPostService.recruitmentListByClubName(testClub.getClubName()).get(0).getPostId();
+    void updateEventPostTest() {
+        eventPostService.newEventPost(postCreateDTO);
+        Long postId = eventPostService.eventListByClubName(testClub.getClubName()).get(0).getPostId();
 
         PostUpdateDTO postUpdateDTO = new PostUpdateDTO();
         postUpdateDTO.setPostId(postId);
         postUpdateDTO.setPostTitle("updatedTitle");
         postUpdateDTO.setPostContent("updatedContent");
-        recruitmentPostService.updateRecruitmentPost(postUpdateDTO);
+        eventPostService.updateEventPost(postUpdateDTO);
 
-        List<PostResponseDTO> foundPost = recruitmentPostService.recruitmentListByClubName(testClub.getClubName());
+        List<PostResponseDTO> foundPost = eventPostService.eventListByClubName(testClub.getClubName());
         Assertions.assertThat(foundPost.size()).isEqualTo(1);
         Assertions.assertThat(foundPost.get(0).getPostId()).isEqualTo(postId);
         Assertions.assertThat(foundPost.get(0).getPostTitle()).isEqualTo(postUpdateDTO.getPostTitle());
@@ -123,25 +115,25 @@ class RecruitmentPostServiceTest {
     }
 
     @Test
-    void deleteRecruitmentPostTest() {
-        recruitmentPostService.newRecruitmentPost(postCreateDTO);
+    void deleteEventPostTest() {
+        eventPostService.newEventPost(postCreateDTO);
 
-        List<PostResponseDTO> foundPostBefore = recruitmentPostService.recruitmentListByClubName(testClub.getClubName());
+        List<PostResponseDTO> foundPostBefore = eventPostService.eventListByClubName(testClub.getClubName());
         Assertions.assertThat(foundPostBefore.size()).isEqualTo(1);
 
         Long postId = foundPostBefore.get(0).getPostId();
-        recruitmentPostService.deleteRecruitmentPost(postId);
+        eventPostService.deleteEventPost(postId);
 
         Assertions.assertThatThrownBy(() -> {
-            recruitmentPostService.recruitmentPostById(postId);
-        })
+                    eventPostService.eventPostById(postId);
+                })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("postId에 해당하는 post를 찾을 수 없음.");
 
         Assertions.assertThatThrownBy(()->{
-            recruitmentPostService.recruitmentListByClubName(testClub.getClubName());
-        })
+                    eventPostService.eventListByClubName(testClub.getClubName());
+                })
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("해당 동아리에 모집공고글이 존재하지 않습니다.");
+                .hasMessageContaining("해당 동아리에 행사글이 존재하지 않습니다.");
     }
 }

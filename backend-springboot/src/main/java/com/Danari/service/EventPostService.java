@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -54,6 +55,9 @@ public class EventPostService {
             throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
         }
         Club club = foundClub.get();
+        if(club.getEvents().isEmpty()){
+            throw new NoSuchElementException("해당 동아리에 행사글이 존재하지 않습니다.");
+        }
         return PostResponseDTO.fromEntityList(club.getEvents());
     }
 
@@ -75,6 +79,14 @@ public class EventPostService {
     }
 
     public void deleteEventPost(Long postId) {
+        Optional<Post> foundPost = eventPostJpaRepository.findById(postId);
+        if(foundPost.isEmpty()){
+            throw new IllegalArgumentException("이미 삭제된 글이거나, id가 잘못되었습니다");
+        }
+        // 연관된 Club 엔티티에서 행사글 제거
+        Club club = foundPost.get().getClub();
+        club.getEvents().remove(foundPost.get());
+
         eventPostJpaRepository.deleteById(postId);
     }
 }
