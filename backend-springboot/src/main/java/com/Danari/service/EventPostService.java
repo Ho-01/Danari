@@ -9,9 +9,12 @@ import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.EventPostJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,48 +30,41 @@ public class EventPostService {
     @Autowired
     private MembershipJpaRepository membershipJpaRepository;
 
+    @Transactional
     public void newEventPost(PostCreateDTO postCreateDTO) {
-        Optional<Club> foundClub = clubJpaRepository.findByClubName(postCreateDTO.getClubName());
-        Optional<Member> foundMember =  memberJpaRepository.findByUsername(postCreateDTO.getUsername());
-        if(foundClub.isEmpty()){
-            throw new IllegalArgumentException("PostCreateDTO의 ClubName 필드 잘못됨 : 존재하지 않는 동아리명입니다.");
-        }
-        if (foundMember.isEmpty()){
-            throw new IllegalArgumentException("PostCreateDTO의 username 필드 잘못됨 : 존재하지 않는 사용자 이름입니다.");
-        }
-        Optional<Membership> foundMembership = membershipJpaRepository.findByMemberAndClub(foundMember.get(), foundClub.get());
-        if(foundMembership.isEmpty()){
-            throw new IllegalArgumentException("PostCreateDTO의 username: "+postCreateDTO.getUsername()+" 에 해당하는 사용자는 ClubName : "+postCreateDTO.getClubName()+"에 해당하는 동아리에 가입되어 있지 않습니다.");
-        }
-        if(foundMembership.get().getMemberGrade()!= MemberGrade.PRESIDENT){
+        Club foundClub = clubJpaRepository.findByClubName(postCreateDTO.getClubName())
+                .orElseThrow(() -> new EntityNotFoundException("동아리를 찾을 수 없습니다. ClubName: "+postCreateDTO.getClubName()+" 에 해당하는 동아리 없음"));
+        Member foundMember =  memberJpaRepository.findByUsername(postCreateDTO.getUsername())
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다. Username: "+postCreateDTO.getUsername()+" 에 해당하는 사용자 없음"));
+        Membership foundMembership = membershipJpaRepository.findByMemberAndClub(foundMember, foundClub)
+                .orElseThrow(() -> new EntityNotFoundException("동아리 가입 정보를 찾을 수 없습니다. Username: "+postCreateDTO.getUsername()+" 사용자는 ClubName : "+postCreateDTO.getClubName()+" 동아리에 가입되어 있지 않습니다."));
+
+        if(foundMembership.getMemberGrade()!= MemberGrade.PRESIDENT){
             throw new IllegalArgumentException("EventPost의 작성 권한은 PRESIDENT 입니다. 작성 권한이 없습니다.");
         }
 
         Post post = Post.builder().postType(postCreateDTO.getPostType()).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
-        post.createEventPost(foundMember.get(), foundClub.get());
+        post.createEventPost(foundMember, foundClub);
         eventPostJpaRepository.save(post);
+        eventPostJpaRepository.flush();
+
     }
 
     public List<PostResponseDTO> eventListByClubName(String clubName) {
-        Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
-        if(foundClub.isEmpty()){
-            throw new IllegalArgumentException("동아리명 잘못됨, 입력된 값: "+clubName);
-        }
-        Club club = foundClub.get();
-        if(club.getEvents().isEmpty()){
-            throw new NoSuchElementException("해당 동아리에 행사글이 존재하지 않습니다.");
-        }
-        return PostResponseDTO.fromEntityList(club.getEvents());
+        Club foundClub = clubJpaRepository.findByClubName(clubName)
+                .orElseThrow(() -> new EntityNotFoundException("동아리를 찾을 수 없습니다. ClubName: "+clubName+" 에 해당하는 동아리 없음"));
+
+        return PostResponseDTO.fromEntityList(foundClub.getEvents());
     }
 
     public PostResponseDTO eventPostById(Long postId) {
-        Optional<Post> foundPost = eventPostJpaRepository.findById(postId);
-        if(foundPost.isEmpty()){
-            throw new IllegalArgumentException("postId에 해당하는 post를 찾을 수 없음.");
-        }
-        return PostResponseDTO.fromEntity(foundPost.get());
+        Post foundPost = eventPostJpaRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("행사글을 찾을 수 없습니다. postId: "+postId+" 에 해당하는 행사글 없음"));
+
+        return PostResponseDTO.fromEntity(foundPost);
     }
 
+    @Transactional
     public void updateEventPost(PostUpdateDTO postUpdateDTO) {
         Optional<Post> foundPost = eventPostJpaRepository.findById(postUpdateDTO.getPostId());
         if(foundPost.isEmpty()){
@@ -78,6 +74,7 @@ public class EventPostService {
         post.updatePost(postUpdateDTO.getPostTitle(), postUpdateDTO.getPostContent(), postUpdateDTO.getImageUrls());
     }
 
+    @Transactional
     public void deleteEventPost(Long postId) {
         Optional<Post> foundPost = eventPostJpaRepository.findById(postId);
         if(foundPost.isEmpty()){
@@ -86,6 +83,9 @@ public class EventPostService {
         // 연관된 Club 엔티티에서 행사글 제거
         Club club = foundPost.get().getClub();
         club.getEvents().remove(foundPost.get());
+        // 연관된 Member 엔티티에서 행사글 제거
+        Member member = foundPost.get().getAuthor();
+        member.getEventPosts().remove(foundPost.get());
 
         eventPostJpaRepository.deleteById(postId);
     }

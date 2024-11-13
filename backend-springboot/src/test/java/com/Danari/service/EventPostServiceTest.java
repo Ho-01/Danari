@@ -7,6 +7,7 @@ import com.Danari.dto.PostUpdateDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -124,16 +125,12 @@ class EventPostServiceTest {
         Long postId = foundPostBefore.get(0).getPostId();
         eventPostService.deleteEventPost(postId);
 
+        Assertions.assertThat(eventPostService.eventListByClubName(testClub.getClubName()).isEmpty()).isEqualTo(true);
+
         Assertions.assertThatThrownBy(() -> {
                     eventPostService.eventPostById(postId);
                 })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("postId에 해당하는 post를 찾을 수 없음.");
-
-        Assertions.assertThatThrownBy(()->{
-                    eventPostService.eventListByClubName(testClub.getClubName());
-                })
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("해당 동아리에 행사글이 존재하지 않습니다.");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("행사글을 찾을 수 없습니다. postId: "+postId+" 에 해당하는 행사글 없음");
     }
 }

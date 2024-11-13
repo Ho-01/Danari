@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class ReviewResponseDTO {
     private String clubName;
     @Schema(description = "후기 내용")
     private String reviewContent;
+    @Schema(description = "리뷰 작성 일시")
+    private LocalDateTime createdAt;
 
     public static ReviewResponseDTO fromEntity(Review review){
         ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO();
@@ -29,6 +32,7 @@ public class ReviewResponseDTO {
         reviewResponseDTO.setUsername(review.getAuthor().getUsername());
         reviewResponseDTO.setClubName(review.getClub().getClubName());
         reviewResponseDTO.setReviewContent(review.getReviewContent());
+        reviewResponseDTO.setCreatedAt(review.getCreatedAt());
         return reviewResponseDTO;
     }
 

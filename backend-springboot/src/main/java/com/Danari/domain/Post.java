@@ -56,8 +56,7 @@ public class Post {
     }
 
     @Builder
-    public Post(Long id, Member author, Club club, PostType postType, String postTitle, String postContent, List<String> imageUrls) {
-        this.id = id;
+    public Post(Member author, Club club, PostType postType, String postTitle, String postContent, List<String> imageUrls) {
         this.author = author;
         this.club = club;
         this.postType = postType;
