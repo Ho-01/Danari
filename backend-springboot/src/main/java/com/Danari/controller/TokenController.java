@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.naming.AuthenticationException;
+
 @RestController
 @RequestMapping("/token")
 public class TokenController {
@@ -17,7 +19,7 @@ public class TokenController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<LoginResponseDTO> refresh(@RequestHeader("Authorization") String authorizationHeader) {
         // bearer 제거
         String refreshToken = authorizationHeader.substring(7);
 
@@ -29,8 +31,7 @@ public class TokenController {
             String newAccessToken = jwtTokenUtil.generateAccessToken(username);
             return ResponseEntity.ok(new LoginResponseDTO(newAccessToken, refreshToken));
         }else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token is not valid");
+            throw new IllegalArgumentException("Refresh Token is not valid");
         }
-
     }
 }
