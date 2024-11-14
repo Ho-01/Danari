@@ -8,6 +8,7 @@ import com.Danari.dto.ReviewCreateDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,5 +148,11 @@ class ClubServiceTest {
         Assertions.assertThat(clubDetailDTO.getReviews().get(0).getUsername()).isEqualTo(member.getUsername());
         Assertions.assertThat(clubDetailDTO.getReviews().get(0).getClubName()).isEqualTo(club1.getClubName());
         Assertions.assertThat(clubDetailDTO.getReviews().get(0).getReviewContent()).isEqualTo(review.getReviewContent());
+
+        Assertions.assertThatThrownBy(() -> {
+                    clubService.clubDetailByClubName("MakeError");
+                })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("동아리를 찾을 수 없습니다. ClubName: MakeError 에 해당하는 동아리 없음");
     }
 }

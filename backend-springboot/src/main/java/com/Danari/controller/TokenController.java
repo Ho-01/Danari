@@ -2,6 +2,7 @@ package com.Danari.controller;
 
 import com.Danari.dto.LoginResponseDTO;
 import com.Danari.security.JwtTokenUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class TokenController {
     private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/refresh")
+    @Operation(summary = "RefreshToken 으로 AccessToken 재발급", description = "기존 AccessToken 만료되어 사용 불가시 헤더에 RefreshToken 을 넣어 재발급 요청")
     public ResponseEntity<LoginResponseDTO> refresh(@RequestHeader("Authorization") String authorizationHeader) {
         // bearer 제거
         String refreshToken = authorizationHeader.substring(7);

@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class EventPostService {
@@ -46,8 +43,6 @@ public class EventPostService {
         Post post = Post.builder().postType(postCreateDTO.getPostType()).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
         post.createEventPost(foundMember, foundClub);
         eventPostJpaRepository.save(post);
-        eventPostJpaRepository.flush();
-
     }
 
     public List<PostResponseDTO> eventListByClubName(String clubName) {
@@ -66,26 +61,19 @@ public class EventPostService {
 
     @Transactional
     public void updateEventPost(PostUpdateDTO postUpdateDTO) {
-        Optional<Post> foundPost = eventPostJpaRepository.findById(postUpdateDTO.getPostId());
-        if(foundPost.isEmpty()){
-            throw new IllegalArgumentException("postUpdateDTO의 postId 필드가 잘못되었습니다. 해당하는 post가 DB에 없습니다. postId: "+postUpdateDTO.getPostId());
-        }
-        Post post = foundPost.get();
-        post.updatePost(postUpdateDTO.getPostTitle(), postUpdateDTO.getPostContent(), postUpdateDTO.getImageUrls());
+        Post foundPost = eventPostJpaRepository.findById(postUpdateDTO.getPostId())
+                .orElseThrow(() -> new EntityNotFoundException("업데이트할 행사글을 찾을 수 없습니다. postId: "+postUpdateDTO.getPostId()+" 에 해당하는 행사글 없음"));
+        foundPost.updatePost(postUpdateDTO.getPostTitle(), postUpdateDTO.getPostContent(), postUpdateDTO.getImageUrls());
     }
 
     @Transactional
     public void deleteEventPost(Long postId) {
-        Optional<Post> foundPost = eventPostJpaRepository.findById(postId);
-        if(foundPost.isEmpty()){
-            throw new IllegalArgumentException("이미 삭제된 글이거나, id가 잘못되었습니다");
-        }
-        // 연관된 Club 엔티티에서 행사글 제거
-        Club club = foundPost.get().getClub();
-        club.getEvents().remove(foundPost.get());
-        // 연관된 Member 엔티티에서 행사글 제거
-        Member member = foundPost.get().getAuthor();
-        member.getEventPosts().remove(foundPost.get());
+        Post foundPost = eventPostJpaRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("삭제할 행사글을 찾을 수 없습니다. postId: "+postId+" 에 해당하는 행사글 없음"));
+        Club club = foundPost.getClub();
+        club.getEvents().remove(foundPost); // 연관된 Club 엔티티에서 행사글 제거
+        Member member = foundPost.getAuthor();
+        member.getEventPosts().remove(foundPost); // 연관된 Member 엔티티에서 행사글 제거
 
         eventPostJpaRepository.deleteById(postId);
     }

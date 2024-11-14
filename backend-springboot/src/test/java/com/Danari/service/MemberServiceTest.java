@@ -10,6 +10,7 @@ import com.Danari.dto.MembershipRegistrationDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,13 +74,10 @@ class MemberServiceTest {
     void registerMemberTest(){
         memberService.registerMember(testMemberRegistrationDTO);
 
-        Optional<Member> savedMember = memberJpaRepository.findByUsername(testMemberRegistrationDTO.getUsername());
-        Assertions.assertThat(savedMember.isPresent()).isEqualTo(true);
-        Assertions.assertThat(savedMember.get().getName()).isEqualTo(testMemberRegistrationDTO.getName());
-        Assertions.assertThat(savedMember.get().getStudentId()).isEqualTo(testMemberRegistrationDTO.getStudentId());
-
         Optional<Member> foundMember = memberJpaRepository.findByUsername(testMemberRegistrationDTO.getUsername());
         Assertions.assertThat(foundMember.isPresent()).isEqualTo(true);
+        Assertions.assertThat(foundMember.get().getName()).isEqualTo(testMemberRegistrationDTO.getName());
+        Assertions.assertThat(foundMember.get().getStudentId()).isEqualTo(testMemberRegistrationDTO.getStudentId());
 
         List<Membership> foundMembership = membershipJpaRepository.findByMember(foundMember.get());
         Assertions.assertThat(foundMembership.size()).isEqualTo(testMemberRegistrationDTO.getMembershipRegistrationDTOList().size());
@@ -89,6 +87,22 @@ class MemberServiceTest {
         Assertions.assertThat(foundMembership.get(1).getMember()).isEqualTo(foundMember.get());
         Assertions.assertThat(foundMembership.get(1).getClub()).isEqualTo(testClub2);
         Assertions.assertThat(foundMembership.get(1).getMemberGrade()).isEqualTo(membershipRegistrationDTO2.getRole());
+
+        Assertions.assertThatThrownBy(() -> {
+                    memberService.registerMember(testMemberRegistrationDTO);
+                })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("회원가입이 불가능합니다. Username: "+testMemberRegistrationDTO.getUsername()+" 은 이미 존재하는 아이디입니다");
+
+        testMemberRegistrationDTO.getMembershipRegistrationDTOList().get(0).setClubName("X");
+        testMemberRegistrationDTO.setUsername("newUsername");
+        Assertions.assertThatThrownBy(() -> {
+                    memberService.registerMember(testMemberRegistrationDTO);
+                })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("동아리를 찾을 수 없습니다. ClubName: "+testMemberRegistrationDTO.getMembershipRegistrationDTOList().get(0).getClubName()+" 에 해당하는 동아리 없음");
+        testMemberRegistrationDTO.getMembershipRegistrationDTOList().get(0).setClubName("testClub1");
+
     }
 
     @Test
@@ -98,5 +112,11 @@ class MemberServiceTest {
         Assertions.assertThat(memberResponseDTO.getName()).isEqualTo(testMemberRegistrationDTO.getName());
         Assertions.assertThat(memberResponseDTO.getUsername()).isEqualTo(testMemberRegistrationDTO.getUsername());
         Assertions.assertThat(memberResponseDTO.getStudentId()).isEqualTo(testMemberRegistrationDTO.getStudentId());
+
+        Assertions.assertThatThrownBy(() -> {
+            memberService.getMemberByUsername("X");
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("사용자를 찾을 수 없습니다. Username: X 에 해당하는 사용자 없음");
     }
 }

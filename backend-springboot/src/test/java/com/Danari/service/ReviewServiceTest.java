@@ -10,6 +10,7 @@ import com.Danari.dto.ReviewUpdateDTO;
 import com.Danari.repository.ClubJpaRepository;
 import com.Danari.repository.MemberJpaRepository;
 import com.Danari.repository.MembershipJpaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -57,15 +56,26 @@ class ReviewServiceTest {
 
     @Test
     void newReviewTest() {
-        Assertions.assertThatThrownBy(() ->{
-            reviewService.reviewListByClubName(testClub.getClubName());
-        })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 동아리에 리뷰가 존재하지 않습니다.");
-
+        Assertions.assertThat(reviewService.reviewListByClubName(testClub.getClubName()).isEmpty()).isEqualTo(true);
         reviewService.newReview(reviewCreateDTO);
         List<ReviewResponseDTO> foundReview = reviewService.reviewListByClubName(testClub.getClubName());
         Assertions.assertThat(foundReview.size()).isEqualTo(1);
+
+        reviewCreateDTO.setClubName("X");
+        Assertions.assertThatThrownBy(() -> {
+            reviewService.newReview(reviewCreateDTO);
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("동아리를 찾을 수 없습니다. ClubName: "+reviewCreateDTO.getClubName()+" 에 해당하는 동아리 없음");
+        reviewCreateDTO.setClubName(testClub.getClubName());
+
+        reviewCreateDTO.setUsername("X");
+        Assertions.assertThatThrownBy(() -> {
+                    reviewService.newReview(reviewCreateDTO);
+                })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("사용자를 찾을 수 없습니다. Username: "+reviewCreateDTO.getUsername()+" 에 해당하는 사용자 없음");
+        reviewCreateDTO.setUsername(testMember.getUsername());
     }
 
     @Test
@@ -74,9 +84,15 @@ class ReviewServiceTest {
 
         List<ReviewResponseDTO> foundReview = reviewService.reviewListByClubName(testClub.getClubName());
         Assertions.assertThat(foundReview.size()).isEqualTo(1);
-        Assertions.assertThat(foundReview.get(0).getUsername()).isEqualTo(testMember.getUsername());
-        Assertions.assertThat(foundReview.get(0).getClubName()).isEqualTo(testClub.getClubName());
+        Assertions.assertThat(foundReview.get(0).getUsername()).isEqualTo(reviewCreateDTO.getUsername());
+        Assertions.assertThat(foundReview.get(0).getClubName()).isEqualTo(reviewCreateDTO.getClubName());
         Assertions.assertThat(foundReview.get(0).getReviewContent()).isEqualTo(reviewCreateDTO.getReviewContent());
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewService.reviewListByClubName("X");
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("동아리를 찾을 수 없습니다. ClubName: X 에 해당하는 동아리 없음");
     }
 
     @Test
@@ -90,6 +106,12 @@ class ReviewServiceTest {
         Assertions.assertThat(reviewResponseDTO.getUsername()).isEqualTo(reviewCreateDTO.getUsername());
         Assertions.assertThat(reviewResponseDTO.getClubName()).isEqualTo(reviewCreateDTO.getClubName());
         Assertions.assertThat(reviewResponseDTO.getReviewContent()).isEqualTo(reviewCreateDTO.getReviewContent());
+
+        Assertions.assertThatThrownBy(() -> {
+            reviewService.reviewById(1000L);
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("리뷰를 찾을 수 없습니다. reviewId: 1000 에 해당하는 리뷰 없음");
     }
 
     @Test
@@ -106,6 +128,13 @@ class ReviewServiceTest {
         reviewService.updateReview(reviewUpdateDTO);
         ReviewResponseDTO reviewResponseDTO = reviewService.reviewById(reviewId);
         Assertions.assertThat(reviewResponseDTO.getReviewContent()).isEqualTo(reviewUpdateDTO.getReviewContent());
+
+        reviewUpdateDTO.setId(1000L);
+        Assertions.assertThatThrownBy(() -> {
+            reviewService.updateReview(reviewUpdateDTO);
+        })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("업데이트할 리뷰를 찾을 수 없습니다. reviewId: "+reviewUpdateDTO.getId()+" 에 해당하는 리뷰 없음");
     }
 
     @Test
@@ -113,20 +142,15 @@ class ReviewServiceTest {
         reviewService.newReview(reviewCreateDTO);
         List<ReviewResponseDTO> foundReviewBefore = reviewService.reviewListByClubName(testClub.getClubName());
         Assertions.assertThat(foundReviewBefore.size()).isEqualTo(1);
-
         Long reviewId = foundReviewBefore.get(0).getId();
+
         reviewService.deleteReview(reviewId);
 
+        Assertions.assertThat(reviewService.reviewListByClubName(reviewCreateDTO.getClubName()).isEmpty()).isEqualTo(true);
         Assertions.assertThatThrownBy(() ->{
-            reviewService.reviewById(reviewId);
-        })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("ReviewId에 해당하는 Review를 찾을 수 없음.");
-
-        Assertions.assertThatThrownBy(() ->{
-            reviewService.reviewListByClubName(reviewCreateDTO.getClubName());
-        })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("해당 동아리에 리뷰가 존재하지 않습니다.");
+                    reviewService.reviewById(reviewId);
+                })
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("리뷰를 찾을 수 없습니다. reviewId: "+reviewId+" 에 해당하는 리뷰 없음");
     }
 }

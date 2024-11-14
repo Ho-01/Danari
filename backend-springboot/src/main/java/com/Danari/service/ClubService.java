@@ -1,15 +1,12 @@
 package com.Danari.service;
 
 import com.Danari.domain.Club;
-import com.Danari.domain.Post;
-import com.Danari.domain.Review;
 import com.Danari.dto.*;
 import com.Danari.repository.ClubJpaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,16 +30,14 @@ public class ClubService {
     }
 
     public ClubDetailDTO clubDetailByClubName(String clubName) {
-        Optional<Club> foundClub = clubJpaRepository.findByClubName(clubName);
-        if(foundClub.isEmpty()){ throw new EntityNotFoundException("해당하는 동아리가 없습니다. = "+clubName); }
+        Club foundClub = clubJpaRepository.findByClubName(clubName)
+                .orElseThrow(() -> new EntityNotFoundException("동아리를 찾을 수 없습니다. ClubName: "+clubName+" 에 해당하는 동아리 없음"));
 
-        Club club = foundClub.get();
+        List<PostResponseDTO> eventDTOList = eventPostService.eventListByClubName(foundClub.getClubName());
+        List<PostResponseDTO> recruitmentDTOList = recruitmentPostService.recruitmentListByClubName(foundClub.getClubName());
+        List<ReviewResponseDTO> reviewResponseDTOList = reviewService.reviewListByClubName(foundClub.getClubName());
 
-        List<PostResponseDTO> eventDTOList = eventPostService.eventListByClubName(club.getClubName());
-        List<PostResponseDTO> recruitmentDTOList = recruitmentPostService.recruitmentListByClubName(club.getClubName());
-        List<ReviewResponseDTO> reviewResponseDTOList = reviewService.reviewListByClubName(club.getClubName());
-
-        ClubDetailDTO clubDetailDTO = ClubDetailDTO.fromEntity(club);
+        ClubDetailDTO clubDetailDTO = ClubDetailDTO.fromEntity(foundClub);
         clubDetailDTO.setEvents(eventDTOList);
         clubDetailDTO.setRecruitments(recruitmentDTOList);
         clubDetailDTO.setReviews(reviewResponseDTOList);
