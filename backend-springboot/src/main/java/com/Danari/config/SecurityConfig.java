@@ -37,7 +37,7 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(authorize->authorize
-                        .requestMatchers("auth/login","/swagger-ui/**", "/v3/api-docs/**").permitAll() // 허용된 엔드포인트
+                        .requestMatchers("auth/login", "members/registration", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // 허용된 엔드포인트
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
                 .sessionManagement(session -> session

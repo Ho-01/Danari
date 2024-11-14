@@ -2,12 +2,11 @@ package com.Danari.controller;
 
 import com.Danari.domain.Club;
 import com.Danari.domain.MemberGrade;
+import com.Danari.dto.ClubResponseDTO;
 import com.Danari.dto.LoginRequestDTO;
-import com.Danari.dto.LoginResponseDTO;
 import com.Danari.dto.MemberRegistrationDTO;
 import com.Danari.dto.MembershipRegistrationDTO;
 import com.Danari.repository.ClubJpaRepository;
-import com.Danari.repository.RefreshTokenRepository;
 import com.Danari.service.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,19 +21,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class AuthControllerTest {
+class ClubControllerTest {
+    @Autowired
+    private ClubController clubController;
     @Autowired
     private AuthController authController;
     @Autowired
     private MemberService memberService;
     @Autowired
     private ClubJpaRepository clubJpaRepository;
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
 
     private LoginRequestDTO loginRequestDTO;
 
@@ -65,31 +63,17 @@ class AuthControllerTest {
     }
 
     @Test
-    void login() {
-        ResponseEntity<LoginResponseDTO> response = authController.login(loginRequestDTO);
+    void clubListAll() {
+        ResponseEntity<List<ClubResponseDTO>> response = clubController.clubListAll();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(response.getBody()).isNotNull();
-        Assertions.assertThat(response.getBody().getAccessToken()).isNotNull();
-        Assertions.assertThat(response.getBody().getRefreshToken()).isNotNull();
-
-        loginRequestDTO.setUserId("X");
-        Assertions.assertThatThrownBy(() -> {
-            authController.login(loginRequestDTO);
-        })
-                .isInstanceOf(AuthenticationException.class)
-                .hasMessageContaining("자격 증명에 실패하였습니다.");
-        loginRequestDTO.setUserId("username");
+        Assertions.assertThat(response.getBody().size()).isEqualTo(1);
     }
 
     @Test
-    void logout() {
-        String accessToken = authController.login(loginRequestDTO).getBody().getAccessToken();
-        Assertions.assertThat(refreshTokenRepository.findAll().size()).isEqualTo(1);
+    void clubListByDepartment() {
+    }
 
-        String authorizationHeader = "Bearer "+ accessToken;
-        ResponseEntity<String> response = authController.logout(authorizationHeader);
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(response.getBody()).isEqualTo("로그아웃 성공");
-        Assertions.assertThat(refreshTokenRepository.findAll().isEmpty()).isEqualTo(true);
+    @Test
+    void clubDetailByCLubName() {
     }
 }

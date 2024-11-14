@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,11 +42,11 @@ public class AuthController {
     @Operation(summary = "로그아웃", description = "[로그아웃] 페이지에서 로그아웃시 필요, 로그아웃시 Refresh Token 삭제")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader){
         String accessToken = authorizationHeader.substring(7);
-        if(jwtTokenUtil.isTokenValid(accessToken)){
-            String username = jwtTokenUtil.extractUsername(accessToken);
-            refreshTokenRepository.deleteByUsername(username);
-            return ResponseEntity.ok("logout success");
+        if(!jwtTokenUtil.isTokenValid(accessToken)){
+            throw new IllegalArgumentException("잘못된 토큰입니다 : Refresh Token 검증이 실패했습니다. 유효기간이 지난 토큰일 수 있습니다.");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid token");
+        String username = jwtTokenUtil.extractUsername(accessToken);
+        refreshTokenRepository.deleteByUsername(username);
+        return ResponseEntity.ok("로그아웃 성공");
     }
 }
