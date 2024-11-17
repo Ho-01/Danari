@@ -53,7 +53,6 @@ class EventPostServiceTest {
         postCreateDTO = new PostCreateDTO();
         postCreateDTO.setUsername(testMember.getUsername());
         postCreateDTO.setClubName(testClub.getClubName());
-        postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
         postCreateDTO.setPostTitle("postTitle");
         postCreateDTO.setPostContent("행사글 내용입니다.");
         postCreateDTO.setImageUrls(new ArrayList<>());
@@ -111,7 +110,7 @@ class EventPostServiceTest {
         Assertions.assertThat(foundPost.getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
         Assertions.assertThat(foundPost.getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.getPostType()).isEqualTo(postCreateDTO.getPostType());
+        Assertions.assertThat(foundPost.getPostType()).isEqualTo(PostType.CLUB_EVENT);
 
         Assertions.assertThatThrownBy(() -> {
             eventPostService.eventListByClubName("X");
@@ -130,7 +129,7 @@ class EventPostServiceTest {
         Assertions.assertThat(foundPost.getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
         Assertions.assertThat(foundPost.getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.getPostType()).isEqualTo(postCreateDTO.getPostType());
+        Assertions.assertThat(foundPost.getPostType()).isEqualTo(PostType.CLUB_EVENT);
 
         Assertions.assertThatThrownBy(() -> {
             eventPostService.eventPostById(1000L);

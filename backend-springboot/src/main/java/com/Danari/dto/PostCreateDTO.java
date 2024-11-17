@@ -16,8 +16,6 @@ public class PostCreateDTO {
     private String username;
     @Schema(description = "동아리 이름 : 어떤 동아리에 등록된 공지글/행사정보글인지, 동아리 이름으로 구분")
     private String clubName;
-    @Schema(description = "글 유형 : RECRUITMENT(모집글)인지 EVENT(공지글)인지 구분")
-    private PostType postType;
     @Schema(description = "글 제목")
     private String postTitle;
     @Schema(description = "글 내용")
@@ -29,7 +27,6 @@ public class PostCreateDTO {
         PostCreateDTO PostCreateDTO = new PostCreateDTO();
         PostCreateDTO.setUsername(post.getAuthor().getUsername());
         PostCreateDTO.setClubName(post.getClub().getClubName());
-        PostCreateDTO.setPostType(post.getPostType());
         PostCreateDTO.setPostTitle(post.getPostTitle());
         PostCreateDTO.setPostContent(post.getPostContent());
         PostCreateDTO.setImageUrls(post.getImageUrls());

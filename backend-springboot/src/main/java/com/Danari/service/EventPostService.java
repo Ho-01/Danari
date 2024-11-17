@@ -40,7 +40,7 @@ public class EventPostService {
             throw new IllegalArgumentException("EventPost의 작성 권한은 PRESIDENT 입니다. 작성 권한이 없습니다.");
         }
 
-        Post post = Post.builder().postType(postCreateDTO.getPostType()).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
+        Post post = Post.builder().postType(PostType.CLUB_EVENT).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
         post.createEventPost(foundMember, foundClub);
         eventPostJpaRepository.save(post);
     }
@@ -49,7 +49,7 @@ public class EventPostService {
         Club foundClub = clubJpaRepository.findByClubName(clubName)
                 .orElseThrow(() -> new EntityNotFoundException("동아리를 찾을 수 없습니다. ClubName: "+clubName+" 에 해당하는 동아리 없음"));
 
-        return PostResponseDTO.fromEntityList(foundClub.getEvents());
+        return PostResponseDTO.fromEntityList(eventPostJpaRepository.findEventPostsByClubId(foundClub.getId()));
     }
 
     public PostResponseDTO eventPostById(Long postId) {

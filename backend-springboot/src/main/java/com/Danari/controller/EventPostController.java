@@ -6,6 +6,7 @@ import com.Danari.dto.PostUpdateDTO;
 import com.Danari.service.EventPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,9 @@ public class EventPostController {
     EventPostService eventPostService;
 
     @PostMapping
-    @Operation(summary = "동아리 행사글 작성", description = "[동아리 행사 정보] 페이지에서 새로운 행사글 등록 시 사용")
-    public ResponseEntity<String> newEventPost(@RequestBody PostCreateDTO postCreateDTO){
+    @Operation(summary = "동아리 행사글 작성", description = "[동아리 행사 정보] 페이지에서 새로운 행사글 등록 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> newEventPost(@RequestBody PostCreateDTO postCreateDTO, Authentication authentication){
         // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         eventPostService.newEventPost(postCreateDTO);
@@ -33,23 +33,22 @@ public class EventPostController {
     }
 
     @GetMapping("/list/{clubName}")
-    @Operation(summary = "해당 동아리의 행사 목록 조회", description = "[동아리 행사 정보 목록] 페이지에서 행사 목록 조회 시 사용")
-    public ResponseEntity<List<PostResponseDTO>> EventListByClubName(@Parameter(description = "행사 조회할 동아리명") @PathVariable String clubName){
+    @Operation(summary = "해당 동아리의 행사 목록 조회", description = "[동아리 행사 정보 목록] 페이지에서 행사 목록 조회 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<List<PostResponseDTO>> EventListByClubName(@Parameter(name = "clubName", description = "행사 조회할 동아리명") @PathVariable("clubName") String clubName){
         return ResponseEntity.ok(eventPostService.eventListByClubName(clubName));
     }
 
     @GetMapping("/{postId}")
-    @Operation(summary = "동아리 행사 세부내용 조회", description = "[동아리 행사 정보] 페이지에서 행사 세부 조회 시 사용")
-    public ResponseEntity<PostResponseDTO> EventPostById(@Parameter(description = "세부조회할 행사의 postId") @PathVariable Long postId){
+    @Operation(summary = "동아리 행사 세부내용 조회", description = "[동아리 행사 정보] 페이지에서 행사 세부 조회 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<PostResponseDTO> EventPostById(@Parameter(name = "postId", description = "세부조회할 행사의 postId") @PathVariable("postId") Long postId){
         PostResponseDTO postResponseDTO = eventPostService.eventPostById(postId);
         return ResponseEntity.ok(postResponseDTO);
     }
 
     @PutMapping("/{postId}")
-    @Operation(summary = "동아리 행사 내용 수정", description = "[수정 페이지] 에서 행사 수정 시 사용")
-    public ResponseEntity<String> updateEventPost(@Parameter(description = "내용 수정할 행사의 postId") @PathVariable Long postId, @RequestBody PostUpdateDTO postUpdateDTO){
+    @Operation(summary = "동아리 행사 내용 수정", description = "[수정 페이지] 에서 행사 수정 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> updateEventPost(@Parameter(name = "postId", description = "내용 수정할 행사의 postId") @PathVariable("postId") Long postId, @RequestBody PostUpdateDTO postUpdateDTO, Authentication authentication){
         // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         // 게시글 작성자 확인 > 맞지 않으면 수정불가
@@ -66,10 +65,9 @@ public class EventPostController {
     }
 
     @DeleteMapping("/{postId}")
-    @Operation(summary = "동아리 행사 삭제", description = "[동아리 행사 정보] 페이지에서 본인이 작성한 동아리 행사 삭제 시 사용")
-    public ResponseEntity<String> deleteEventPost(@Parameter(description = "삭제할 행사의 postId") @PathVariable Long postId){
+    @Operation(summary = "동아리 행사 삭제", description = "[동아리 행사 정보] 페이지에서 본인이 작성한 동아리 행사 삭제 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> deleteEventPost(@Parameter(name = "postId", description = "삭제할 행사의 postId") @PathVariable("postId") Long postId, Authentication authentication){
         // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         // 게시글 작성자 확인 > 맞지 않으면 삭제불가

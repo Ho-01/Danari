@@ -53,7 +53,6 @@ class RecruitmentPostServiceTest {
         postCreateDTO = new PostCreateDTO();
         postCreateDTO.setUsername(testMember.getUsername());
         postCreateDTO.setClubName(testClub.getClubName());
-        postCreateDTO.setPostType(PostType.CLUB_RECRUITMENT);
         postCreateDTO.setPostTitle("postTitle");
         postCreateDTO.setPostContent("홍보글 내용입니다.");
         postCreateDTO.setImageUrls(new ArrayList<>());
@@ -113,13 +112,13 @@ class RecruitmentPostServiceTest {
         Assertions.assertThat(foundPost.get(0).getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.get(0).getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
         Assertions.assertThat(foundPost.get(0).getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(postCreateDTO.getPostType());
+        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(PostType.CLUB_RECRUITMENT);
 
         Assertions.assertThat(foundPost.get(0).getUsername()).isEqualTo(testMember.getUsername());
         Assertions.assertThat(foundPost.get(0).getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.get(0).getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
         Assertions.assertThat(foundPost.get(0).getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(postCreateDTO.getPostType());
+        Assertions.assertThat(foundPost.get(0).getPostType()).isEqualTo(PostType.CLUB_RECRUITMENT);
 
         Assertions.assertThatThrownBy(() -> {
                     recruitmentPostService.recruitmentListByClubName("X");
@@ -138,7 +137,7 @@ class RecruitmentPostServiceTest {
         Assertions.assertThat(foundPost.getClubName()).isEqualTo(testClub.getClubName());
         Assertions.assertThat(foundPost.getPostTitle()).isEqualTo(postCreateDTO.getPostTitle());
         Assertions.assertThat(foundPost.getPostContent()).isEqualTo(postCreateDTO.getPostContent());
-        Assertions.assertThat(foundPost.getPostType()).isEqualTo(postCreateDTO.getPostType());
+        Assertions.assertThat(foundPost.getPostType()).isEqualTo(PostType.CLUB_RECRUITMENT);
 
         Assertions.assertThatThrownBy(() -> {
                     recruitmentPostService.recruitmentPostById(1000L);

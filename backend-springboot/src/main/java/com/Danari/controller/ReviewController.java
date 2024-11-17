@@ -4,6 +4,7 @@ import com.Danari.dto.*;
 import com.Danari.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,9 @@ public class ReviewController {
     ReviewService reviewService;
 
     @PostMapping
-    @Operation(summary = "동아리 후기 작성", description = "[동아리 리뷰 목록] 페이지에서 새로운 후기 작성 시 사용")
-    public ResponseEntity<String> newReview(@RequestBody ReviewCreateDTO reviewCreateDTO){
+    @Operation(summary = "동아리 후기 작성", description = "[동아리 리뷰 목록] 페이지에서 새로운 후기 작성 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> newReview(@RequestBody ReviewCreateDTO reviewCreateDTO, Authentication authentication){
         // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         reviewService.newReview(reviewCreateDTO);
@@ -31,16 +31,15 @@ public class ReviewController {
     }
 
     @GetMapping("/list/{clubName}")
-    @Operation(summary = "해당 동아리의 리뷰 목록 조회", description = "[동아리 리뷰 목록] 페이지에서 리뷰 목록 조회 시 사용")
-    public ResponseEntity<List<ReviewResponseDTO>> reviewListByClubName(@Parameter(description = "리뷰 조회할 동아리명") @PathVariable String clubName){
+    @Operation(summary = "해당 동아리의 리뷰 목록 조회", description = "[동아리 리뷰 목록] 페이지에서 리뷰 목록 조회 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<List<ReviewResponseDTO>> reviewListByClubName(@Parameter(name = "clubName", description = "리뷰 조회할 동아리명") @PathVariable("clubName") String clubName){
         return ResponseEntity.ok(reviewService.reviewListByClubName(clubName));
     }
     
     @PutMapping("/{reviewId}")
-    @Operation(summary = "동아리 리뷰 내용 수정", description = "[수정 페이지] 에서 리뷰 수정 시 사용")
-    public ResponseEntity<String> updateReview(@Parameter(description = "내용 수정할 리뷰의 reviewId") @PathVariable Long reviewId, @RequestBody ReviewUpdateDTO reviewUpdateDTO){
+    @Operation(summary = "동아리 리뷰 내용 수정", description = "[수정 페이지] 에서 리뷰 수정 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> updateReview(@Parameter(name = "reviewId", description = "내용 수정할 리뷰의 reviewId") @PathVariable("reviewId") Long reviewId, @RequestBody ReviewUpdateDTO reviewUpdateDTO, Authentication authentication){
         // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         // 게시글 작성자 확인 > 맞지 않으면 수정불가
@@ -58,10 +57,8 @@ public class ReviewController {
 
 
     @DeleteMapping("/{reviewId}")
-    @Operation(summary = "동아리 리뷰 삭제", description = "[동아리 리뷰 목록] 페이지에서 본인이 작성한 동아리 리뷰 삭제 시 사용")
-    public ResponseEntity<String> deleteReview(@Parameter(description = "삭제할 리뷰의 reviewId") @PathVariable Long reviewId){
-        // 인증된 사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @Operation(summary = "동아리 리뷰 삭제", description = "[동아리 리뷰 목록] 페이지에서 본인이 작성한 동아리 리뷰 삭제 시 사용", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> deleteReview(@Parameter(name = "reviewId", description = "삭제할 리뷰의 reviewId") @PathVariable("reviewId") Long reviewId, Authentication authentication){
         String currentUsername = authentication.getName(); // 현재 로그인된 사용자의 username
 
         // 게시글 작성자 확인 > 맞지 않으면 삭제불가

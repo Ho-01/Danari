@@ -9,6 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class JwtTokenUtil {
         return generateToken(username, ACCESS_TOKEN_EXPIRATION);
     }
 
+    @Transactional
     public String generateRefreshToken(String username){
         String refreshToken = generateToken(username, REFRESH_TOKEN_EXPIRATION);
 
@@ -62,7 +64,7 @@ public class JwtTokenUtil {
     }
 
     public boolean isTokenValid(String token){
-        return extractUsername(token) != null && !isTokenExpired(token);
+        return refreshTokenRepository.findByUsername(extractUsername(token)).isPresent() && !isTokenExpired(token);
     }
 
     public boolean validateRefreshToken(String refreshToken, String username){
@@ -73,7 +75,4 @@ public class JwtTokenUtil {
                 !isTokenExpired(refreshToken); // 만료되었나 확인
     }
 
-    public void deleteRefreshToken(String username){
-        refreshTokenRepository.deleteByUsername(username);
-    }
 }

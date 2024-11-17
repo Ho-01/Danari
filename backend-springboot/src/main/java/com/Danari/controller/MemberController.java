@@ -4,6 +4,7 @@ import com.Danari.dto.MemberRegistrationDTO;
 import com.Danari.dto.MemberResponseDTO;
 import com.Danari.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +17,7 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/profile")
-    @Operation(summary = "로그인된 사용자 정보 확인", description = "클라이언트단에서 memberId, membership 등 멤버 정보가 필요할 시 사용")
+    @Operation(summary = "로그인된 사용자 정보 확인", description = "클라이언트단에서 memberId, membership 등 멤버 정보가 필요할 시 사용", security = {@SecurityRequirement(name = "Authorization")})
     public ResponseEntity<MemberResponseDTO> getMemberProfile(Authentication authentication){
         return ResponseEntity.ok(memberService.getMemberByUsername(authentication.getName()));
     }

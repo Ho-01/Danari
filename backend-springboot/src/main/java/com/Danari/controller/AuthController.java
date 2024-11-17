@@ -5,6 +5,7 @@ import com.Danari.dto.LoginResponseDTO;
 import com.Danari.repository.RefreshTokenRepository;
 import com.Danari.security.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,15 +41,11 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponseDTO(accessToken, refreshToken));
     }
 
+    @Transactional
     @PostMapping("/logout")
-    @Operation(summary = "로그아웃", description = "[로그아웃] 페이지에서 로그아웃시 필요, 로그아웃시 Refresh Token 삭제")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String authorizationHeader){
-        String accessToken = authorizationHeader.substring(7);
-        if(!jwtTokenUtil.isTokenValid(accessToken)){
-            throw new IllegalArgumentException("잘못된 토큰입니다 : Refresh Token 검증이 실패했습니다. 유효기간이 지난 토큰일 수 있습니다.");
-        }
-        String username = jwtTokenUtil.extractUsername(accessToken);
-        refreshTokenRepository.deleteByUsername(username);
+    @Operation(summary = "로그아웃", description = "[로그아웃] 페이지에서 로그아웃시 필요, 로그아웃시 Refresh Token 삭제", security = {@SecurityRequirement(name = "Authorization")})
+    public ResponseEntity<String> logout(Authentication authentication){
+        refreshTokenRepository.deleteByUsername(authentication.getName());
         return ResponseEntity.ok("로그아웃 성공");
     }
 }
