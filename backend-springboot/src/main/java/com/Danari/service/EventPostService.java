@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,7 +41,7 @@ public class EventPostService {
             throw new IllegalArgumentException("EventPost의 작성 권한은 PRESIDENT 입니다. 작성 권한이 없습니다.");
         }
 
-        Post post = Post.builder().postType(PostType.CLUB_EVENT).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).build();
+        Post post = Post.builder().postType(PostType.CLUB_EVENT).postContent(postCreateDTO.getPostContent()).postTitle(postCreateDTO.getPostTitle()).imageUrls(postCreateDTO.getImageUrls()).build();
         post.createEventPost(foundMember, foundClub);
         eventPostJpaRepository.save(post);
     }

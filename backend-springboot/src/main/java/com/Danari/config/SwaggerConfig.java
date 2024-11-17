@@ -27,6 +27,6 @@ public class SwaggerConfig {
         return new Info()
                 .title("Danari API")
                 .description("Danari API 문서")
-                .version("0.2.4");
+                .version("0.2.5");
     }
 }

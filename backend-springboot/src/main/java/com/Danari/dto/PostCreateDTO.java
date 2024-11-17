@@ -5,6 +5,7 @@ import com.Danari.domain.PostType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,7 +22,7 @@ public class PostCreateDTO {
     @Schema(description = "글 내용")
     private String postContent;
     @Schema(description = "첨부 이미지 url 리스트")
-    private List<String> imageUrls;
+    private List<String> imageUrls = new ArrayList<>();
 
     public static PostCreateDTO fromEntity(Post post) {
         PostCreateDTO PostCreateDTO = new PostCreateDTO();
