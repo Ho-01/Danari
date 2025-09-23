@@ -9,6 +9,17 @@
 
 ---
 
+## 📸 스크린샷
+
+<p align="center">
+  <img src="./docs/screenshot1.png" width="150"/>
+  <img src="./docs/screenshot2.png" width="150"/>
+  <img src="./docs/screenshot3.png" width="150"/>
+  <img src="./docs/screenshot4.png" width="150"/>
+</p>
+
+---
+
 ## 🎮 프로젝트 개요
 동아리 정보를 등록하고 싶은 동아리 소속 재학생 & 동아리 정보를 확인하고 싶은 일반 재학생
 
@@ -46,18 +57,6 @@
 - #### 김승호 – ERD설계, Backend API 개발, AWS 관리
 - #### 이성호 - DB, RDS 관리
 - #### 탁세하 - Frontend 개발, 디자인
-
----
-
-## 📸 스크린샷
-
-<p align="center">
-  <img src="./docs/title.png" width="150"/>
-  <img src="./docs/cutscene.png" width="150"/>
-  <img src="./docs/puzzle.png" width="150"/>
-  <img src="./docs/dialog.png" width="150"/>
-  <img src="./docs/move.png" width="150"/>
-</p>
     
     : 
     
