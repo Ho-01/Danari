@@ -1,4 +1,4 @@
-# 📌 단아리: 단국대학교 교내 동아리 홍보&커뮤니티 서비스 📌
+# 📌 단아리: 단국대학교 교내 동아리 홍보 & 정보 제공 앱 📌
 > **단아리는 동아리 기본 정보, 모집 정보, 관련 리뷰 등 단국대학교 학생들에게 교내 동아리에 대한 각종 정보를 보다 편리하게 제공해주는 모바일 플랫폼입니다**  
 <p align="center">
   <img src="./docs/title.png" width="800"/>
@@ -14,7 +14,7 @@
 ## 📸 스크린샷
 
 <p align="center">
-  <img src="./docs/screenshot1.png" width="10"/>
+  <img src="./docs/screenshot1.png" width="100"/>
   <img src="./docs/screenshot2.png" width="200"/>
   <img src="./docs/screenshot3.png" width="200"/>
   <img src="./docs/screenshot4.png" width="100"/>
@@ -33,6 +33,15 @@
 - **동아리 리뷰 등록 및 확인 기능 제공**: 각 동아리에 대한 리뷰를 등록하고 확인할 수 있게 하는 기능을 제공하여, 해당 동아리 가입을 원하는 재학생들에게 생생한 동아리 활동 후기를 제공할 수 있습니다
 
 ---
+
+## ERD
+<p align="center">
+  <img src="./docs/ERD.png" width="800"/>
+</p>
+## 백엔드 아키텍처
+<p align="center">
+  <img src="./docs/BE.png" width="800"/>
+</p>
 
 ## 🛠 기술 스택
 
