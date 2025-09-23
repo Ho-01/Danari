@@ -1,6 +1,8 @@
 # 📌 단아리: 단국대학교 교내 동아리 홍보&커뮤니티 서비스 📌
 > **단아리는 동아리 기본 정보, 모집 정보, 관련 리뷰 등 단국대학교 학생들에게 교내 동아리에 대한 각종 정보를 보다 편리하게 제공해주는 모바일 플랫폼입니다**  
-<img src="./docs/title.png" width="800"/>
+<p align="center">
+  <img src="./docs/title.png" width="800"/>
+</p>
 
 ![Last Commit](https://img.shields.io/github/last-commit/Ho-01/NAVI_frontend?style=flat-square&label=Last%20Commit&color=000&labelColor=000&logo=git&logoColor=F05032)
 ![Repo Size](https://img.shields.io/github/repo-size/Ho-01/NAVI_frontend?style=flat-square&label=Repo%20Size&color=000&labelColor=000&logo=github&logoColor=FFFFFF)
@@ -12,10 +14,10 @@
 ## 📸 스크린샷
 
 <p align="center">
-  <img src="./docs/screenshot1.png" width="150"/>
-  <img src="./docs/screenshot2.png" width="300"/>
-  <img src="./docs/screenshot3.png" width="300"/>
-  <img src="./docs/screenshot4.png" width="150"/>
+  <img src="./docs/screenshot1.png" width="10"/>
+  <img src="./docs/screenshot2.png" width="200"/>
+  <img src="./docs/screenshot3.png" width="200"/>
+  <img src="./docs/screenshot4.png" width="100"/>
 </p>
 
 ---
