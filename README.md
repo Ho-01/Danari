@@ -64,4 +64,3 @@
 - #### 김승호 – ERD설계, Backend API 개발, AWS 관리
 - #### 이성호 - DB, RDS 관리
 - #### 탁세하 - Frontend 개발, 디자인
-    : 
